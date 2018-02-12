@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
+"""
+Doing the POW on local system
+"""
 
 import multiprocessing
-import iota
+from iota.crypto.pycurl import NUMBER_OF_ROUNDS
 
 
 class PearlDiver:
@@ -112,7 +115,7 @@ class PearlDiver:
 
     def transform(self, curl_state_low, curl_state_high):
         curl_scratchpad_index = 0
-        for _ in range(crypto.NUMBER_OF_ROUNDS):
+        for _ in range(NUMBER_OF_ROUNDS):
             curl_scratchpad_low = curl_state_low[:]
             curl_scratchpad_high = curl_state_high[:]
 

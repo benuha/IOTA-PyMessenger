@@ -19,8 +19,9 @@ class MDatabaseTest(TestCase):
         self.db_root[self.predefined_seed] = account
         zodb_trans.commit()
         self.assertTrue(self.predefined_seed in self.db_root)
+        self.assertTrue(type(self.db_root[self.predefined_seed] is Account))
 
-    def test_add_address(self):
+    def _test_add_address(self):
         self.assertIsNotNone(self.db_root[self.predefined_seed])
         self.assertTrue(len(self.db_root[self.predefined_seed].get_addresses_list()) == 0)
 

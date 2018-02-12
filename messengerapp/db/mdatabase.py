@@ -22,6 +22,30 @@ class DBManager:
         # Get the root object dict, this's where we store our data
         self.db_root = self.db.open().root()
 
+    def search_account(self, seed):
+        """
+        Search local db for account with given seed
+        :return: The first account associated with this seed, otherwise None
+        """
+        if seed not in self.db_root:
+            self.db_root[seed] = Account(seed)
+            self.update_all()
+            return None
+        account = self.db_root[seed]
+        addresses = account.get_addresses_list()
+        if len(addresses) == 0:
+            return None
+        return addresses[0]
+
+    def update_all(self):
+        zodb_trans.commit()
+
+    def add_account(self, seed, new_address):
+        _account = Account(seed)
+        self.db_root[seed] = _account
+        self.update_all()
+        _account.store_new_address(new_address)
+
     def close(self):
         logger.info("Closing the database")
         self.db.close()
@@ -48,11 +72,13 @@ class Account(persistent.Persistent):
 
 class Address(persistent.Persistent):
 
-    def __init__(self, name, address, key_index, checksum=None, balance=None):
-        """ Each account can generate a number of addresses. Address is the private key generated from user seed and
-        attached to tangle. Public address is used to exchange messages and iota """
+    def __init__(self, name, address, key_index, public_key, private_key, checksum=None, balance=None):
+        """ Account represented by address which generated from user seed and
+        attached to tangle. Public/private key are used to encrypt and exchange messages securely over tangle """
         self.address = address
         self.key_index = key_index
+        self.public_key = public_key
+        self.private_key = private_key
         self.checksum = checksum
         self.balance = balance
         self.name = name
@@ -65,8 +91,8 @@ class Address(persistent.Persistent):
 
 class Contacts(persistent.Persistent):
 
-    def __init__(self, contact_addr):
-        """ List of contact associate with an account """
+    def __init__(self, contact_addr, public_key):
+        """ Contact which associate with an account and shared the public key """
         self.contact_addr = contact_addr
         # Contains list of messages from this contact
         self.messages = []
