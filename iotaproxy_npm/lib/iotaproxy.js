@@ -69,6 +69,9 @@ let iotaProxy =
                                     console.log('Processing command: ' + requestbodyOb.command);
                                     console.log('Message trytes: ' + requestbodyOb.trytes);
                                     console.log('Message tag: ' + requestbodyOb.tag);
+                                    console.log('minWeightMagnitude: ' + requestbodyOb.minWeightMagnitude);
+                                    console.log('obsoleteTag: ' + requestbodyOb.obsoleteTag);
+                                    console.log('timestamp: ' + requestbodyOb.attachmentTimestamp);
                                     ccurlProvider.attachToTangle(
                                         requestbodyOb.trunkTransaction, requestbodyOb.branchTransaction,
                                         requestbodyOb.minWeightMagnitude, requestbodyOb.trytes,
@@ -123,7 +126,10 @@ let iotaProxy =
                                             proxyResponse.on(
                                                 'end',
                                                 function () {
-                                                    response.writeHead(proxyResponse.statusCode, proxyResponse.statusMessage, {'Content-Type': proxyResponse.headers['content-type']});
+                                                    response.writeHead(proxyResponse.statusCode,
+                                                        proxyResponse.statusMessage, {
+                                                        'Content-Type': proxyResponse.headers['content-type']
+                                                    });
                                                     response.write(proxyResult);
                                                     response.end();
                                                 }

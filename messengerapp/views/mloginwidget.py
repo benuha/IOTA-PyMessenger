@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'mloginwidget.ui'
+# Form implementation generated from reading views file 'mloginwidget.views'
 #
 # Created by: PyQt5 UI code generator 5.5.1
 #
@@ -12,6 +12,7 @@ class Ui_Form(object):
     def setupUi(self, Form):
         Form.setObjectName("Form")
         Form.resize(593, 171)
+        Form.setAutoFillBackground(True)
         self.labelInsertSeed = QtWidgets.QLabel(Form)
         self.labelInsertSeed.setGeometry(QtCore.QRect(14, 10, 491, 31))
         self.labelInsertSeed.setMaximumSize(QtCore.QSize(16777215, 109))
@@ -40,20 +41,16 @@ class Ui_Form(object):
         self.horizontalLayout.addWidget(self.labelSeedShorten)
         self.checkBoxVisibleSeed = QtWidgets.QCheckBox(self.layoutWidget)
         self.checkBoxVisibleSeed.setEnabled(True)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Preferred)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.checkBoxVisibleSeed.sizePolicy().hasHeightForWidth())
         self.checkBoxVisibleSeed.setSizePolicy(sizePolicy)
-        self.checkBoxVisibleSeed.setMaximumSize(QtCore.QSize(236, 22))
+        self.checkBoxVisibleSeed.setMaximumSize(QtCore.QSize(70, 22))
         self.checkBoxVisibleSeed.setLayoutDirection(QtCore.Qt.RightToLeft)
+        self.checkBoxVisibleSeed.setAutoFillBackground(False)
         self.checkBoxVisibleSeed.setObjectName("checkBoxVisibleSeed")
         self.horizontalLayout.addWidget(self.checkBoxVisibleSeed)
-        self.labelInsertSeed.raise_()
-        self.buttonLogin.raise_()
-        self.textEditSeed.raise_()
-        self.layoutWidget.raise_()
-        self.labelSeedShorten.raise_()
 
         self.retranslateUi(Form)
         QtCore.QMetaObject.connectSlotsByName(Form)

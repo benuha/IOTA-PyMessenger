@@ -72,9 +72,10 @@ class Account(persistent.Persistent):
 
 class Address(persistent.Persistent):
 
-    def __init__(self, name, address, key_index, public_key, private_key, checksum=None, balance=None):
+    def __init__(self, name, seed, address, key_index, public_key, private_key, checksum=None, balance=None):
         """ Account represented by address which generated from user seed and
         attached to tangle. Public/private key are used to encrypt and exchange messages securely over tangle """
+        self.seed = seed
         self.address = address
         self.key_index = key_index
         self.public_key = public_key
@@ -86,19 +87,28 @@ class Address(persistent.Persistent):
 
     def add_contact(self, contact):
         self.contacts.append(contact)
+        # Mark the record as changed
+        self._p_changed = True
         zodb_trans.commit()
+
+    def get_list_contacts(self):
+        return self.contacts
 
 
 class Contacts(persistent.Persistent):
 
-    def __init__(self, contact_addr, public_key):
+    def __init__(self, contact_addr, name, public_key):
         """ Contact which associate with an account and shared the public key """
         self.contact_addr = contact_addr
+        self.name = name
+        self.public_key = public_key
         # Contains list of messages from this contact
         self.messages = []
 
     def add_message(self, message):
         self.messages.append(message)
+        # Mark the record as changed
+        self._p_changed = True
         zodb_trans.commit()
 
 
@@ -110,13 +120,19 @@ class Messages(persistent.Persistent):
     STATUS_QUEUE = "message_queuing"
     STATUS_POW = "message_pow"
 
-    def __init__(self, from_address, to_address, timestamp, text, message_root, status=STATUS_SENDING):
+    def __init__(self, from_address, to_address, timestamp, text, message_root=None, status=STATUS_SENDING):
         self.from_address = from_address
         self.to_address = to_address
         self.timestamp = timestamp
         self.text = text
         self.message_root = message_root
         self.status = status
+
+    def is_valid_message(self):
+        return self.from_address is not None and \
+            self.to_address is not None and \
+            self.text is not None and \
+            self.timestamp is not None
 
     def update_status(self, status):
         self.status = status

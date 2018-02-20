@@ -1,11 +1,11 @@
 import base64
 import re
 from json import JSONDecodeError
-
+import json
 from Crypto import Random
 from Crypto.Cipher import AES, PKCS1_OAEP
 from Crypto.PublicKey import RSA
-from iota import Iota, BadApiResponse, ProposedTransaction, Address, TryteString, Tag, Bundle
+from iota import Iota, BadApiResponse, ProposedTransaction, Address, TryteString, Tag, Bundle, Transaction
 from iota.crypto.kerl import Kerl
 from iota.crypto.kerl.conv import trytes_to_trits, trits_to_trytes
 import logging
@@ -19,10 +19,10 @@ logger = logging.getLogger(__name__)
 class IOTAWrapper:
     # The node that we will talk to in order to connect to iota tangle
     # We can host the node our-self
-    DEFAULT_NODE_ADDRESS = "http://localhost:14265" #"http://p103.iotaledger.net:14700" #"http://node02.iotatoken.nl:14265"
+    DEFAULT_PROVIDER = "http://localhost:14265" #"http://p103.iotaledger.net:14700" #"http://node02.iotatoken.nl:14265"
 
     # Our channel predefined tag for all messages sent/received
-    MESS_TAG = "MESKAPIOZTAG99999999999999"
+    MESS_TAG = "MESKAPIOZTAG99999999999999"  #"MESSAGEKAPIOZTAG9999999999"
 
     def __init__(self, seed, node_address=None):
         url_regex = re.compile(
@@ -34,7 +34,7 @@ class IOTAWrapper:
             r'(?:/?|[/?]\S+)$', re.IGNORECASE)
 
         if node_address is None or re.match(url_regex, node_address) is None:
-            self.node_address = IOTAWrapper.DEFAULT_NODE_ADDRESS
+            self.node_address = IOTAWrapper.DEFAULT_PROVIDER
         else:
             self.node_address = node_address
         self.seed = seed
@@ -91,7 +91,6 @@ class IOTAWrapper:
         except BadApiResponse as e:
             logger.exception("Bad Api Response: {e}".format(e=e))
         else:
-            print(response)
             bundle = Bundle(response['bundle'])
             print("Bundle Hash: {}\nFrom Address: {}\nTag:".format(bundle.hash,
                                                                    bundle.transactions[0].address,
@@ -99,24 +98,64 @@ class IOTAWrapper:
 
             return response
 
-    @staticmethod
-    def convert_string_to_trytes(plain_text):
-        return TryteString.from_string(plain_text)
+    def get_messages_from_address(self, address):
+        try:
+            response = self.api.find_transactions(addresses=[Address(address)])
+        except ConnectionError as e:
+            logger.exception("Connection error: {e}".format(e=e))
+        except BadApiResponse as e:
+            logger.exception("Bad Api Response: {e}".format(e=e))
+        else:
+            if len(response["hashes"]) < 1:
+                return []
+            trytes = self.api.get_trytes(response["hashes"])
+            transactions = []
+            for trytestring in trytes["trytes"]:
+                tx = Transaction.from_tryte_string(trytestring)
+                transactions.append(tx)
+            return [json.loads(tx.signature_message_fragment.as_string()) for tx in transactions]
+
+    def find_transaction(self, tag=MESS_TAG):
+        try:
+            response = self.api.find_transactions(tags=[self.get_tags(tag)])
+        except ConnectionError as e:
+            logger.exception("Connection error: {e}".format(e=e))
+        except BadApiResponse as e:
+            logger.exception("Bad Api Response: {e}".format(e=e))
+        else:
+            if len(response["hashes"]) < 1:
+                return []
+            trytes = self.api.get_trytes(response["hashes"])
+            transactions = []
+            for trytestring in trytes["trytes"]:
+                tx = Transaction.from_tryte_string(trytestring)
+                transactions.append(tx)
+            return [json.loads(tx.signature_message_fragment.as_string()) for tx in transactions]
 
     @staticmethod
     def get_tags(raw_tag):
-        tryte_tag = TryteString(raw_tag)
+        tryte_tag = TryteString(raw_tag[:27])
         tryte_tag += '9' * (27 - len(tryte_tag))
         return Tag(tryte_tag)
 
     @staticmethod
-    def create_new_transaction(address, message, value=0, tag=MESS_TAG):
+    def create_new_transaction(address, message, value=0, raw_tag=MESS_TAG):
+        logger.info("Address: {}".format(address))
+        logger.info("TAG: {}".format(raw_tag))
+        logger.info("Message: {}".format(TryteString.from_string(message)))
         return [
+            # All hail the glory of IOTA and their dummy transactions for tag retrieval. Without multiple
+            # transaction, Tangle doesn't seem to pick up our Tag and completely change the value of Tag
+            ProposedTransaction(
+                # This address is wholeheartedly irrelevant
+                address=Address("FNAZ9SXUWMPPVHKIWMZWZXSFLPURWIFTUEQCMKGJAKODCMOGCLEAQQQH9BKNZUIFKLOPKRVHDJMBTBFYW"),
+                value=0
+            ),
             ProposedTransaction(
                 address=Address(address),
                 value=value,
+                tag=IOTAWrapper.get_tags(raw_tag),
                 message=TryteString.from_string(message),
-                tag=IOTAWrapper.get_tags(tag)
             )]
 
     @staticmethod

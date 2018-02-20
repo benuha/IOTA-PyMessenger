@@ -13,6 +13,9 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
+  <property name="autoFillBackground">
+   <bool>true</bool>
+  </property>
   <widget class="QLabel" name="labelInsertSeed">
    <property name="geometry">
     <rect>
@@ -108,19 +111,22 @@
        <bool>true</bool>
       </property>
       <property name="sizePolicy">
-       <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
         <horstretch>0</horstretch>
         <verstretch>0</verstretch>
        </sizepolicy>
       </property>
       <property name="maximumSize">
        <size>
-        <width>236</width>
+        <width>70</width>
         <height>22</height>
        </size>
       </property>
       <property name="layoutDirection">
        <enum>Qt::RightToLeft</enum>
+      </property>
+      <property name="autoFillBackground">
+       <bool>false</bool>
       </property>
       <property name="text">
        <string>Visible</string>
@@ -129,11 +135,6 @@
     </item>
    </layout>
   </widget>
-  <zorder>labelInsertSeed</zorder>
-  <zorder>buttonLogin</zorder>
-  <zorder>textEditSeed</zorder>
-  <zorder>layoutWidget</zorder>
-  <zorder>labelSeedShorten</zorder>
  </widget>
  <resources/>
  <connections/>
