@@ -164,7 +164,7 @@ let iotaProxy =
                     socket.end('HTTP/1.1 400 Bad Request\r\n\r\n');
                 }
             );
-            this.server.listen(this.localPort);
+            this.server.listen(this.localPort, '0.0.0.0');
             console.log('IOTA proxy server started');
             console.log('POW timeout is set to ' + this.timeout + ' min');
             console.log('Listening on port ' + this.localPort);

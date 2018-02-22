@@ -1,10 +1,6 @@
-import base64
 import re
 from json import JSONDecodeError
 import json
-from Crypto import Random
-from Crypto.Cipher import AES, PKCS1_OAEP
-from Crypto.PublicKey import RSA
 from iota import Iota, BadApiResponse, ProposedTransaction, Address, TryteString, Tag, Bundle, Transaction
 from iota.crypto.kerl import Kerl
 from iota.crypto.kerl.conv import trytes_to_trits, trits_to_trytes
@@ -19,10 +15,10 @@ logger = logging.getLogger(__name__)
 class IOTAWrapper:
     # The node that we will talk to in order to connect to iota tangle
     # We can host the node our-self
-    DEFAULT_PROVIDER = "http://localhost:14265" #"http://p103.iotaledger.net:14700" #"http://node02.iotatoken.nl:14265"
+    DEFAULT_PROVIDER = "http://localhost:14265"  # "http://p103.iotaledger.net:14700" #"http://node02.iotatoken.nl:14265"
 
     # Our channel predefined tag for all messages sent/received
-    MESS_TAG = "MESKAPIOZTAG99999999999999"  #"MESSAGEKAPIOZTAG9999999999"
+    MESS_TAG = "MESSAGEKAPIOZTAG9999999999"  # "MESKAPIOZTAG99999999999999"
 
     def __init__(self, seed, node_address=None):
         url_regex = re.compile(
@@ -63,9 +59,9 @@ class IOTAWrapper:
     def create_new_address(self):
         # Ask Iota API for a new address
         api_response = self.api.get_new_addresses(
-            index=6,             # Index of the seed to generate private key
-            count=None,          # number of address to generate, default to first unused address
-            security_level=1,    # 1/2/3 for 81/162/243 trits level of sec
+            index=6,  # Index of the seed to generate private key
+            count=None,  # number of address to generate, default to first unused address
+            security_level=1,  # 1/2/3 for 81/162/243 trits level of sec
             checksum=True,
         )
         logger.info(api_response)
@@ -88,14 +84,11 @@ class IOTAWrapper:
             )
         except ConnectionError as e:
             logger.exception("Connection error: {e}".format(e=e))
+            return None
         except BadApiResponse as e:
             logger.exception("Bad Api Response: {e}".format(e=e))
+            return None
         else:
-            bundle = Bundle(response['bundle'])
-            print("Bundle Hash: {}\nFrom Address: {}\nTag:".format(bundle.hash,
-                                                                   bundle.transactions[0].address,
-                                                                   bundle.transactions[0].tag))
-
             return response
 
     def get_messages_from_address(self, address):
@@ -117,7 +110,7 @@ class IOTAWrapper:
 
     def find_transaction(self, tag=MESS_TAG):
         try:
-            response = self.api.find_transactions(tags=[self.get_tags(tag)])
+            response = self.api.find_transactions(tags=[self.get_tryte_tag(tag)])
         except ConnectionError as e:
             logger.exception("Connection error: {e}".format(e=e))
         except BadApiResponse as e:
@@ -133,7 +126,7 @@ class IOTAWrapper:
             return [json.loads(tx.signature_message_fragment.as_string()) for tx in transactions]
 
     @staticmethod
-    def get_tags(raw_tag):
+    def get_tryte_tag(raw_tag):
         tryte_tag = TryteString(raw_tag[:27])
         tryte_tag += '9' * (27 - len(tryte_tag))
         return Tag(tryte_tag)
@@ -154,7 +147,7 @@ class IOTAWrapper:
             ProposedTransaction(
                 address=Address(address),
                 value=value,
-                tag=IOTAWrapper.get_tags(raw_tag),
+                tag=IOTAWrapper.get_tryte_tag(raw_tag),
                 message=TryteString.from_string(message),
             )]
 
@@ -187,88 +180,3 @@ class IOTAWrapper:
         checksum = trits_to_trytes(trits_out)[0 - last_digits:]
 
         return checksum
-
-    @staticmethod
-    def generate_rsa_key_pair():
-        """ Create new RSA key-pair to encrypt messages
-
-        :return: a tuple of PRIAVE-PUBLIC key pair encoded with base64
-        """
-        # RSA modulus length must be a multiple of 256 and >= 1024
-        modulus_length = 256 * 4  # use larger value in production
-        privatekey = RSA.generate(modulus_length, Random.new().read)
-        publickey = privatekey.publickey()
-
-        print(base64.b64encode(privatekey.exportKey(format="DER")).decode())
-        print(base64.b64encode(publickey.exportKey(format="DER")).decode())
-        return base64.b64encode(privatekey.exportKey()), base64.b64encode(publickey.exportKey())
-
-    @staticmethod
-    def aes_encryption(raw_message):
-        """
-        Symmetric encryption of raw message
-        return the cipher text and aes key to decrypt the cipher text
-        :return: tuple of cipher_text, aes_key
-        """
-        # Generate a random AES Key and iv for encryption
-        aes_key = Random.new().read(32)
-        iv = Random.new().read(AES.block_size)
-        aes_cipher = AES.new(aes_key, AES.MODE_CFB, iv)
-        cryptic_message = base64.b64encode(iv + aes_cipher.encrypt(raw_message.encode(encoding='utf-8')))
-
-        return cryptic_message, aes_key
-
-    @staticmethod
-    def aes_decryption(cipher_text, aes_key):
-        """
-        Symmetric decryption of cipher text using the aes key
-        :return: raw message
-        """
-        enc = base64.b64decode(cipher_text)
-        iv = enc[:16]
-        aes_cipher = AES.new(aes_key, AES.MODE_CFB, iv)
-        raw_message = aes_cipher.decrypt(enc[16:]).decode('utf-8')
-
-        return raw_message
-
-    @staticmethod
-    def rsa_encryption(raw_message, public_key):
-        """
-        Asymmetric encryption of given message using the public key
-        :return: the encrypted message
-        """
-        encryptor = PKCS1_OAEP.new(RSA.import_key(public_key))
-        encrypted_msg = base64.b64encode(encryptor.encrypt(raw_message))
-
-        return encrypted_msg
-
-    @staticmethod
-    def rsa_decryption(encrypted_msg, private_key):
-        """
-        Asymmetric decryption of encrypted message using the private key
-        :return: the raw_message
-        """
-        decryptor = PKCS1_OAEP.new(RSA.import_key(private_key))
-        decrypted_msg = decryptor.decrypt(base64.b64decode(encrypted_msg))
-
-        return decrypted_msg
-
-    @staticmethod
-    def message_encryption(raw_message, public_key):
-        """
-        Encrypt raw message using aes encryption, then encrypt the aes key using rsa pub/pri key
-        :return: the encrypted message and encrypted key
-        """
-        cipher_text, aes_key = IOTAWrapper.aes_encryption(raw_message)
-        aes_cipher = IOTAWrapper.rsa_encryption(aes_key, public_key)
-        return cipher_text, aes_cipher
-
-    @staticmethod
-    def message_decryption(cipher_text, aes_cipher, private_key):
-        """
-        Decrypt the encrypted message by first decrypt the aes cipher key using rsa private key
-        :return: return the original message
-        """
-        aes_key = IOTAWrapper.rsa_decryption(aes_cipher, private_key)
-        raw_message = IOTAWrapper.aes_decryption(cipher_text, aes_key)
-        return raw_message

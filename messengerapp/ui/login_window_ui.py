@@ -48,7 +48,9 @@ class LoginWindow(QWidget, mloginwidget.Ui_Form):
     def on_login_with_seed(self):
         self.validate_seed()
         if self.is_validated_seed:
-            self.fn_login_account_with_seed(self.textEditSeed.text().__str__(), self.parent())
+            self.fn_login_account_with_seed(self.textEditSeed.text().__str__())
+        else:
+            logger.error("Input seed is not valid: {}".format(self.textEditSeed.text()))
 
     def show_seed(self):
         if self.checkBoxVisibleSeed.isChecked():

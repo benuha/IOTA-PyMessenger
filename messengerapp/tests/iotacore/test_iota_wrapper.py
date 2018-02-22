@@ -6,6 +6,7 @@ from unittest import TestCase
 from iota import Address
 
 from messengerapp.iotacore.iotawrapper import IOTAWrapper
+from messengerapp.utils import mcrypto
 from messengerapp.utils.exceptions import AppException
 
 
@@ -216,9 +217,9 @@ class TestMessageEncryption(TestCase):
     def test_message_encryption_decryption(self):
         text = self.a_long_text
         # # Generate key-pair
-        priv_64, pub_64 = IOTAWrapper.generate_rsa_key_pair()
-        encrypted_message, aes_cipher = IOTAWrapper.message_encryption(text, base64.b64decode(pub_64))
-        decrypted_message = IOTAWrapper.message_decryption(encrypted_message, aes_cipher, base64.b64decode(priv_64))
+        priv_64, pub_64 = mcrypto.generate_rsa_key_pair()
+        encrypted_message, aes_cipher = mcrypto.message_encryption(text, base64.b64decode(pub_64))
+        decrypted_message = mcrypto.message_decryption(encrypted_message, aes_cipher, base64.b64decode(priv_64))
 
         text_hash = hashlib.md5()
         text_hash.update(text.encode('utf-8'))
