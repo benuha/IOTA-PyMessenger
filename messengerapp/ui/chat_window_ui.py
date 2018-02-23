@@ -114,7 +114,7 @@ class ChatWindow(QWidget, mchatwidget.Ui_Form):
         pxm = get_pixmap_identicon(self.db_account.address.__str__())
 
         # FIXME THIS LINE TRIGGER signal 11: SIGSEGV
-        self.labelAccImage.setPixmap(pxm)
+        # self.labelAccImage.setPixmap(pxm)
 
         contacts = self.db_account.get_list_contacts()
         for contact in contacts:
