@@ -2,23 +2,15 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="0d4f4248-7a04-4bf3-8005-2f6437dfca66" name="Default" comment="">
-      <change beforePath="" afterPath="$PROJECT_DIR$/.idea/watcherTasks.xml" />
-      <change beforePath="" afterPath="$PROJECT_DIR$/messengerapp/utils/mcrypto.py" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" afterPath="$PROJECT_DIR$/.gitignore" />
       <change beforePath="$PROJECT_DIR$/.idea/IOTA-Messenger.iml" afterPath="$PROJECT_DIR$/.idea/IOTA-Messenger.iml" />
       <change beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change beforePath="$PROJECT_DIR$/iotaproxy_npm/lib/iotaproxy.js" afterPath="$PROJECT_DIR$/iotaproxy_npm/lib/iotaproxy.js" />
-      <change beforePath="$PROJECT_DIR$/messengerapp/db/mdatabase.py" afterPath="$PROJECT_DIR$/messengerapp/db/mdatabase.py" />
-      <change beforePath="$PROJECT_DIR$/messengerapp/iotacore/iotawrapper.py" afterPath="$PROJECT_DIR$/messengerapp/iotacore/iotawrapper.py" />
+      <change beforePath="$PROJECT_DIR$/iotaproxy_npm/.idea/workspace.xml" afterPath="$PROJECT_DIR$/iotaproxy_npm/.idea/workspace.xml" />
       <change beforePath="$PROJECT_DIR$/messengerapp/main.py" afterPath="$PROJECT_DIR$/messengerapp/main.py" />
-      <change beforePath="$PROJECT_DIR$/messengerapp/mdb" afterPath="$PROJECT_DIR$/messengerapp/mdb" />
-      <change beforePath="$PROJECT_DIR$/messengerapp/mdb.index" afterPath="$PROJECT_DIR$/messengerapp/mdb.index" />
       <change beforePath="$PROJECT_DIR$/messengerapp/mdb.lock" afterPath="$PROJECT_DIR$/messengerapp/mdb.lock" />
-      <change beforePath="$PROJECT_DIR$/messengerapp/tests/iotacore/test_iota_wrapper.py" afterPath="$PROJECT_DIR$/messengerapp/tests/iotacore/test_iota_wrapper.py" />
+      <change beforePath="$PROJECT_DIR$/messengerapp/requirements.txt" afterPath="$PROJECT_DIR$/messengerapp/requirements.txt" />
       <change beforePath="$PROJECT_DIR$/messengerapp/ui/chat_window_ui.py" afterPath="$PROJECT_DIR$/messengerapp/ui/chat_window_ui.py" />
-      <change beforePath="$PROJECT_DIR$/messengerapp/ui/login_window_ui.py" afterPath="$PROJECT_DIR$/messengerapp/ui/login_window_ui.py" />
-      <change beforePath="$PROJECT_DIR$/messengerapp/views/mchatwidget.py" afterPath="$PROJECT_DIR$/messengerapp/views/mchatwidget.py" />
-      <change beforePath="$PROJECT_DIR$/messengerapp/views/mchatwidget.ui" afterPath="$PROJECT_DIR$/messengerapp/views/mchatwidget.ui" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -30,7 +22,7 @@
   <component name="CoverageDataManager">
     <SUITE FILE_PATH="coverage/IOTA_Messenger$Unittests_in_test_mdb_py.coverage" NAME="Unittests in test_mdb.py Coverage Results" MODIFIED="1518245970282" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/messengerapp/tests/db" />
     <SUITE FILE_PATH="coverage/IOTA_Messenger$Unittests_for_test_iota_wrapper_TestIOTAApi.coverage" NAME="Unittests for test_iota_wrapper.TestIOTAApi Coverage Results" MODIFIED="1518428532002" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/messengerapp/tests/iotacore" />
-    <SUITE FILE_PATH="coverage/IOTA_Messenger$main.coverage" NAME="main Coverage Results" MODIFIED="1519297879988" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/messengerapp" />
+    <SUITE FILE_PATH="coverage/IOTA_Messenger$main.coverage" NAME="main Coverage Results" MODIFIED="1519366432062" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/messengerapp" />
     <SUITE FILE_PATH="coverage/IOTA_Messenger$Unittests_for_test_mdb_MDatabaseTest.coverage" NAME="Unittests for test_mdb.MDatabaseTest Coverage Results" MODIFIED="1518405134258" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/messengerapp/tests/db" />
     <SUITE FILE_PATH="coverage/IOTA_Messenger$Unittests_for_test_iota_wrapper_TestMessageEncryption.coverage" NAME="Unittests for test_iota_wrapper.TestMessageEncryption Coverage Results" MODIFIED="1519292447720" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/messengerapp/tests/iotacore" />
     <SUITE FILE_PATH="coverage/iota_chat_messenger$main.coverage" NAME="main Coverage Results" MODIFIED="1519167078678" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/messengerapp" />
@@ -45,12 +37,12 @@
     <window id="1">
       <content type="file-editors">
         <state>
-          <leaf>
+          <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
             <file leaf-file-name="chat_window_ui.py" pinned="false" current-in-tab="false">
               <entry file="file://$PROJECT_DIR$/messengerapp/ui/chat_window_ui.py">
                 <provider selected="true" editor-type-id="text-editor">
-                  <state relative-caret-position="74">
-                    <caret line="131" column="0" lean-forward="true" selection-start-line="131" selection-start-column="0" selection-end-line="131" selection-end-column="0" />
+                  <state relative-caret-position="2358">
+                    <caret line="131" column="0" lean-forward="false" selection-start-line="131" selection-start-column="0" selection-end-line="131" selection-end-column="0" />
                     <folding>
                       <element signature="e#0#15#0" expanded="true" />
                     </folding>
@@ -61,8 +53,8 @@
             <file leaf-file-name="main.py" pinned="false" current-in-tab="true">
               <entry file="file://$PROJECT_DIR$/messengerapp/main.py">
                 <provider selected="true" editor-type-id="text-editor">
-                  <state relative-caret-position="108">
-                    <caret line="204" column="7" lean-forward="true" selection-start-line="204" selection-start-column="7" selection-end-line="204" selection-end-column="7" />
+                  <state relative-caret-position="3672">
+                    <caret line="204" column="7" lean-forward="false" selection-start-line="204" selection-start-column="7" selection-end-line="204" selection-end-column="7" />
                     <folding>
                       <element signature="e#0#13#0" expanded="true" />
                     </folding>
@@ -73,8 +65,8 @@
             <file leaf-file-name="mdatabase.py" pinned="false" current-in-tab="false">
               <entry file="file://$PROJECT_DIR$/messengerapp/db/mdatabase.py">
                 <provider selected="true" editor-type-id="text-editor">
-                  <state relative-caret-position="268">
-                    <caret line="162" column="50" lean-forward="true" selection-start-line="162" selection-start-column="50" selection-end-line="162" selection-end-column="50" />
+                  <state relative-caret-position="2808">
+                    <caret line="162" column="50" lean-forward="false" selection-start-line="162" selection-start-column="50" selection-end-line="162" selection-end-column="50" />
                     <folding />
                   </state>
                 </provider>
@@ -83,7 +75,7 @@
             <file leaf-file-name="iotawrapper.py" pinned="false" current-in-tab="false">
               <entry file="file://$PROJECT_DIR$/messengerapp/iotacore/iotawrapper.py">
                 <provider selected="true" editor-type-id="text-editor">
-                  <state relative-caret-position="360">
+                  <state relative-caret-position="216">
                     <caret line="20" column="42" lean-forward="false" selection-start-line="20" selection-start-column="16" selection-end-line="20" selection-end-column="42" />
                     <folding>
                       <element signature="e#0#9#0" expanded="true" />
@@ -95,8 +87,8 @@
             <file leaf-file-name="test_iota_wrapper.py" pinned="false" current-in-tab="false">
               <entry file="file://$PROJECT_DIR$/messengerapp/tests/iotacore/test_iota_wrapper.py">
                 <provider selected="true" editor-type-id="text-editor">
-                  <state relative-caret-position="70">
-                    <caret line="50" column="54" lean-forward="true" selection-start-line="50" selection-start-column="54" selection-end-line="50" selection-end-column="54" />
+                  <state relative-caret-position="738">
+                    <caret line="50" column="54" lean-forward="false" selection-start-line="50" selection-start-column="54" selection-end-line="50" selection-end-column="54" />
                     <folding>
                       <element signature="e#2516#95465#0" expanded="false" />
                     </folding>
@@ -114,7 +106,7 @@
       <file leaf-file-name="mcrypto.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/messengerapp/utils/mcrypto.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="159">
+            <state relative-caret-position="0">
               <caret line="56" column="0" lean-forward="false" selection-start-line="56" selection-start-column="0" selection-end-line="56" selection-end-column="0" />
               <folding>
                 <element signature="e#0#13#0" expanded="true" />
@@ -133,11 +125,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="main.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="main.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/messengerapp/main.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="440">
-              <caret line="330" column="32" lean-forward="true" selection-start-line="330" selection-start-column="32" selection-end-line="330" selection-end-column="32" />
+            <state relative-caret-position="189">
+              <caret line="207" column="25" lean-forward="true" selection-start-line="207" selection-start-column="25" selection-end-line="207" selection-end-column="25" />
               <folding>
                 <element signature="e#0#13#0" expanded="true" />
               </folding>
@@ -145,11 +137,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="chat_window_ui.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="chat_window_ui.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/messengerapp/ui/chat_window_ui.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="403">
-              <caret line="129" column="0" lean-forward="false" selection-start-line="129" selection-start-column="0" selection-end-line="129" selection-end-column="0" />
+            <state relative-caret-position="364">
+              <caret line="203" column="72" lean-forward="true" selection-start-line="203" selection-start-column="72" selection-end-line="203" selection-end-column="72" />
               <folding>
                 <element signature="e#0#15#0" expanded="true" />
               </folding>
@@ -160,8 +152,8 @@
       <file leaf-file-name="mloginwidget.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/messengerapp/views/mloginwidget.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="283">
-              <caret line="62" column="116" lean-forward="true" selection-start-line="62" selection-start-column="41" selection-end-line="62" selection-end-column="116" />
+            <state relative-caret-position="441">
+              <caret line="62" column="116" lean-forward="false" selection-start-line="62" selection-start-column="41" selection-end-line="62" selection-end-column="116" />
               <folding />
             </state>
           </provider>
@@ -170,7 +162,7 @@
       <file leaf-file-name="identiconer.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/messengerapp/utils/identiconer.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="216">
+            <state relative-caret-position="1062">
               <caret line="65" column="42" lean-forward="false" selection-start-line="64" selection-start-column="24" selection-end-line="65" selection-end-column="42" />
               <folding />
             </state>
@@ -200,8 +192,8 @@
       <file leaf-file-name="iotaproxy.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/iotaproxy_npm/lib/iotaproxy.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1014">
-              <caret line="154" column="29" lean-forward="true" selection-start-line="154" selection-start-column="29" selection-end-line="154" selection-end-column="29" />
+            <state relative-caret-position="2772">
+              <caret line="154" column="29" lean-forward="false" selection-start-line="154" selection-start-column="29" selection-end-line="154" selection-end-column="29" />
               <folding />
             </state>
           </provider>
@@ -277,9 +269,10 @@
         <option value="$PROJECT_DIR$/messengerapp/utils/util.py" />
         <option value="$PROJECT_DIR$/messengerapp/tests/iotacore/test_iota_wrapper.py" />
         <option value="$PROJECT_DIR$/messengerapp/iotacore/iotawrapper.py" />
-        <option value="$PROJECT_DIR$/messengerapp/ui/chat_window_ui.py" />
         <option value="$PROJECT_DIR$/messengerapp/db/mdatabase.py" />
         <option value="$PROJECT_DIR$/messengerapp/main.py" />
+        <option value="$PROJECT_DIR$/messengerapp/ui/chat_window_ui.py" />
+        <option value="$PROJECT_DIR$/.gitignore" />
       </list>
     </option>
   </component>
@@ -299,7 +292,7 @@
     <handled-path value="$PROJECT_DIR$/iotaproxy_npm/node_modules" />
   </component>
   <component name="ProjectFrameBounds" extendedState="4">
-    <option name="x" value="2063" />
+    <option name="x" value="1978" />
     <option name="y" value="24" />
     <option name="width" value="1771" />
     <option name="height" value="1056" />
@@ -322,6 +315,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scratches" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -340,60 +334,17 @@
               <item name="iotaproxy_npm" type="462c0819:PsiDirectoryNode" />
               <item name="lib" type="462c0819:PsiDirectoryNode" />
             </path>
-            <path>
-              <item name="IOTA-Messenger" type="b2602c69:ProjectViewProjectNode" />
-              <item name="IOTA-Messenger" type="462c0819:PsiDirectoryNode" />
-              <item name="messengerapp" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="IOTA-Messenger" type="b2602c69:ProjectViewProjectNode" />
-              <item name="IOTA-Messenger" type="462c0819:PsiDirectoryNode" />
-              <item name="messengerapp" type="462c0819:PsiDirectoryNode" />
-              <item name="iotacore" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="IOTA-Messenger" type="b2602c69:ProjectViewProjectNode" />
-              <item name="IOTA-Messenger" type="462c0819:PsiDirectoryNode" />
-              <item name="messengerapp" type="462c0819:PsiDirectoryNode" />
-              <item name="tests" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="IOTA-Messenger" type="b2602c69:ProjectViewProjectNode" />
-              <item name="IOTA-Messenger" type="462c0819:PsiDirectoryNode" />
-              <item name="messengerapp" type="462c0819:PsiDirectoryNode" />
-              <item name="tests" type="462c0819:PsiDirectoryNode" />
-              <item name="iotacore" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="IOTA-Messenger" type="b2602c69:ProjectViewProjectNode" />
-              <item name="IOTA-Messenger" type="462c0819:PsiDirectoryNode" />
-              <item name="messengerapp" type="462c0819:PsiDirectoryNode" />
-              <item name="ui" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="IOTA-Messenger" type="b2602c69:ProjectViewProjectNode" />
-              <item name="IOTA-Messenger" type="462c0819:PsiDirectoryNode" />
-              <item name="messengerapp" type="462c0819:PsiDirectoryNode" />
-              <item name="utils" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="IOTA-Messenger" type="b2602c69:ProjectViewProjectNode" />
-              <item name="IOTA-Messenger" type="462c0819:PsiDirectoryNode" />
-              <item name="messengerapp" type="462c0819:PsiDirectoryNode" />
-              <item name="views" type="462c0819:PsiDirectoryNode" />
-            </path>
           </expand>
           <select />
         </subPane>
       </pane>
-      <pane id="Scratches" />
       <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
+    <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/../car-agents" />
     <property name="JavaScriptWeakerCompletionTypeGuess" value="true" />
   </component>
@@ -581,19 +532,19 @@
     </history-entry>
   </component>
   <component name="ToolWindowManager">
-    <frame x="2063" y="24" width="1771" height="1056" extended-state="4" />
-    <editor active="true" />
+    <frame x="1978" y="24" width="1771" height="1056" extended-state="4" />
     <layout>
+      <window_info id="PlantUML" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32739422" sideWeight="0.50409615" order="8" side_tool="true" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
-      <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32705098" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
+      <window_info id="Cargo" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32739422" sideWeight="0.50409615" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
+      <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32705098" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4135255" sideWeight="0.48283377" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.36191538" sideWeight="0.5171662" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.15652174" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Docker" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="false" weight="0.33" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.36031044" sideWeight="0.5171662" order="12" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.16173913" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Docker" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="false" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32705098" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="SciView" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.21549773" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
@@ -601,12 +552,13 @@
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
-      <window_info id="R Packages" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="R Graphics" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Concurrent Activities Diagram" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32990867" sideWeight="0.5" order="12" side_tool="false" content_ui="tabs" />
+      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="R Packages" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32705098" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Concurrent Activities Diagram" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32990867" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
     </layout>
     <layout-to-restore>
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
@@ -650,12 +602,12 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/messengerapp/main.py</url>
-          <line>359</line>
+          <line>360</line>
           <option name="timeStamp" value="90" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/messengerapp/main.py</url>
-          <line>357</line>
+          <line>358</line>
           <option name="timeStamp" value="91" />
         </line-breakpoint>
       </breakpoints>
@@ -674,7 +626,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/messengerapp/tests/db/mdb" />
     <entry file="file://$PROJECT_DIR$/messengerapp/tests/db/mdb.index" />
     <entry file="file://$PROJECT_DIR$/messengerapp/tests/db/mdb.tmp" />
     <entry file="file://$PROJECT_DIR$/../IOTA-Messenger-env3/lib/python3.5/site-packages/ZODB/Connection.py" />
@@ -712,13 +663,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="391">
           <caret line="27" column="12" lean-forward="false" selection-start-line="27" selection-start-column="12" selection-end-line="27" selection-end-column="12" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/messengerapp/requirements.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
         </state>
       </provider>
     </entry>
@@ -783,8 +727,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/iotaproxy_npm/lib/iotaproxy.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1014">
-          <caret line="154" column="29" lean-forward="true" selection-start-line="154" selection-start-column="29" selection-end-line="154" selection-end-column="29" />
+        <state relative-caret-position="2772">
+          <caret line="154" column="29" lean-forward="false" selection-start-line="154" selection-start-column="29" selection-end-line="154" selection-end-column="29" />
           <folding />
         </state>
       </provider>
@@ -793,7 +737,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="291">
           <caret line="719" column="6" lean-forward="false" selection-start-line="719" selection-start-column="6" selection-end-line="719" selection-end-column="6" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -809,7 +752,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="310">
           <caret line="51" column="13" lean-forward="true" selection-start-line="51" selection-start-column="13" selection-end-line="51" selection-end-column="13" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -823,7 +765,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/messengerapp/utils/identiconer.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="216">
+        <state relative-caret-position="1062">
           <caret line="65" column="42" lean-forward="false" selection-start-line="64" selection-start-column="24" selection-end-line="65" selection-end-column="42" />
           <folding />
         </state>
@@ -833,7 +775,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="322">
           <caret line="34" column="8" lean-forward="false" selection-start-line="34" selection-start-column="8" selection-end-line="34" selection-end-column="8" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -841,7 +782,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="574">
           <caret line="750" column="0" lean-forward="false" selection-start-line="750" selection-start-column="0" selection-end-line="750" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -849,25 +789,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="734">
           <caret line="48" column="0" lean-forward="true" selection-start-line="48" selection-start-column="0" selection-end-line="48" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/messengerapp/iotacore/iotawrapper.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="360">
-          <caret line="20" column="42" lean-forward="false" selection-start-line="20" selection-start-column="16" selection-end-line="20" selection-end-column="42" />
-          <folding>
-            <element signature="e#0#9#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/messengerapp/views/mloginwidget.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="283">
-          <caret line="62" column="116" lean-forward="true" selection-start-line="62" selection-start-column="41" selection-end-line="62" selection-end-column="116" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -876,26 +797,6 @@
         <state relative-caret-position="468">
           <caret line="29" column="27" lean-forward="false" selection-start-line="29" selection-start-column="27" selection-end-line="29" selection-end-column="27" />
           <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/messengerapp/ui/chat_window_ui.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="74">
-          <caret line="131" column="0" lean-forward="true" selection-start-line="131" selection-start-column="0" selection-end-line="131" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#15#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/messengerapp/tests/iotacore/test_iota_wrapper.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="70">
-          <caret line="50" column="54" lean-forward="true" selection-start-line="50" selection-start-column="54" selection-end-line="50" selection-end-column="54" />
-          <folding>
-            <element signature="e#2516#95465#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -909,7 +810,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/messengerapp/utils/mcrypto.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="159">
+        <state relative-caret-position="0">
           <caret line="56" column="0" lean-forward="false" selection-start-line="56" selection-start-column="0" selection-end-line="56" selection-end-column="0" />
           <folding>
             <element signature="e#0#13#0" expanded="true" />
@@ -919,18 +820,72 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/messengerapp/db/mdatabase.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="268">
-          <caret line="162" column="50" lean-forward="true" selection-start-line="162" selection-start-column="50" selection-end-line="162" selection-end-column="50" />
+        <state relative-caret-position="2808">
+          <caret line="162" column="50" lean-forward="false" selection-start-line="162" selection-start-column="50" selection-end-line="162" selection-end-column="50" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/messengerapp/iotacore/iotawrapper.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="216">
+          <caret line="20" column="42" lean-forward="false" selection-start-line="20" selection-start-column="16" selection-end-line="20" selection-end-column="42" />
+          <folding>
+            <element signature="e#0#9#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/messengerapp/tests/iotacore/test_iota_wrapper.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="738">
+          <caret line="50" column="54" lean-forward="false" selection-start-line="50" selection-start-column="54" selection-end-line="50" selection-end-column="54" />
+          <folding>
+            <element signature="e#2516#95465#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/messengerapp/views/mloginwidget.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="441">
+          <caret line="62" column="116" lean-forward="false" selection-start-line="62" selection-start-column="41" selection-end-line="62" selection-end-column="116" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/messengerapp/main.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="108">
-          <caret line="204" column="7" lean-forward="true" selection-start-line="204" selection-start-column="7" selection-end-line="204" selection-end-column="7" />
+        <state relative-caret-position="189">
+          <caret line="207" column="25" lean-forward="true" selection-start-line="207" selection-start-column="25" selection-end-line="207" selection-end-column="25" />
           <folding>
             <element signature="e#0#13#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/messengerapp/requirements.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="352">
+          <caret line="25" column="18" lean-forward="true" selection-start-line="25" selection-start-column="18" selection-end-line="25" selection-end-column="18" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.gitignore">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="54">
+          <caret line="3" column="12" lean-forward="true" selection-start-line="3" selection-start-column="12" selection-end-line="3" selection-end-column="12" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/messengerapp/ui/chat_window_ui.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="364">
+          <caret line="203" column="72" lean-forward="true" selection-start-line="203" selection-start-column="72" selection-end-line="203" selection-end-column="72" />
+          <folding>
+            <element signature="e#0#15#0" expanded="true" />
           </folding>
         </state>
       </provider>

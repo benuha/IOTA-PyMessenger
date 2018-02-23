@@ -114,7 +114,7 @@ class ChatWindow(QWidget, mchatwidget.Ui_Form):
         pxm = get_pixmap_identicon(self.db_account.address.__str__())
 
         # FIXME THIS LINE TRIGGER signal 11: SIGSEGV
-        # self.labelAccImage.setPixmap(pxm)
+        self.labelAccImage.setPixmap(pxm)
 
         contacts = self.db_account.get_list_contacts()
         for contact in contacts:
@@ -175,7 +175,8 @@ class ChatWindow(QWidget, mchatwidget.Ui_Form):
                                                      ).strftime('%Y-%m-%d %H:%M:%S')))
 
                 # FIXME THIS LINE TRIGGER signal 11: SIGSEGV
-                # msg_label.setIcon(QIcon(get_pixmap_identicon(message.from_address)))
+                # pxm = get_pixmap_identicon(message.from_address)
+                # msg_label.setIcon(QIcon(pxm))
 
                 self.listMessages.addItem(msg_label)
 

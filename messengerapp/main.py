@@ -342,9 +342,10 @@ class MainApplication:
         db_account.add_messages(messages)
 
     def query_messages_from_tangle(self, delayed=False):
+        """ Pull new messages off Tangle Net with the app Tag """
         worker = Worker(self._find_messages, self.seed, delayed)
         worker.signals.result.connect(self.on_store_all_messages)
-        # FIXME NO RERUN FOR NOW!
+        # re-run after finished with a time delay
         worker.signals.finished.connect(lambda: self.rerun_the_query(True))
         threadpool.start(worker)
 
