@@ -1,5 +1,6 @@
+import json
 import logging
-
+import hashlib
 import ZODB
 import ZODB.FileStorage
 import persistent
@@ -103,6 +104,10 @@ class Account(persistent.Persistent):
          """
         self.attached = True
 
+    def update_all(self):
+        self._p_changed = True
+        zodb_trans.commit()
+
     def add_contact(self, contact):
         self.contacts.append(contact)
         # Mark the record as changed
@@ -131,7 +136,6 @@ class Contacts(persistent.Persistent):
 
 
 class Messages(persistent.Persistent):
-
     STATUS_SENDING = "message_sending"
     STATUS_SENT = "message_sent"
     STATUS_ERROR = "message_error"
@@ -151,8 +155,8 @@ class Messages(persistent.Persistent):
 
     def is_valid_message(self):
         return self.from_address is not None and \
-            self.to_address is not None and \
-            self.timestamp is not None
+               self.to_address is not None and \
+               self.timestamp is not None
 
     def update_status(self, status):
         self.status = status
@@ -162,8 +166,20 @@ class Messages(persistent.Persistent):
     def __eq__(self, other):
         """Overrides the default implementation"""
         if isinstance(self, other.__class__):
-            return self.__dict__ == other.__dict__
+            return self.get_hashcode() == other.get_hashcode()
+
         return False
+
+    def get_hashcode(self):
+        md5 = hashlib.md5()
+        md5.update(json.dumps(
+            {
+                "from_address": self.from_address,
+                "to_address": self.to_address,
+                "timestamp": self.timestamp,
+                "text": self.text
+            }).encode('utf-8'))
+        return md5.hexdigest()
 
     def convert_to_dict(self):
         return {
@@ -171,8 +187,8 @@ class Messages(persistent.Persistent):
             "to_address": self.to_address,
             "timestamp": self.timestamp,
             "text": self.text,
-            "cipher_text": self.cipher_text,
-            "aes_cipher": self.aes_cipher,
+            "cipher_text": self.cipher_text.decode('utf-8'),
+            "aes_cipher": self.aes_cipher.decode('utf-8'),
             "message_root": self.message_root,
             "status": self.status
         }

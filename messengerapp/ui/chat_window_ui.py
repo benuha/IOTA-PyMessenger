@@ -1,9 +1,7 @@
 import datetime
 import logging
-from PyQt5.QtGui import QPixmap, QIcon
-from PyQt5.QtWidgets import QWidget, QDialog, QListWidgetItem, QMessageBox
-
-from messengerapp.utils import identiconer
+from PyQt5.QtGui import QIcon
+from PyQt5.QtWidgets import QWidget, QDialog, QListWidgetItem, QMessageBox, QErrorMessage
 from messengerapp.views import mchatwidget, msearchwidget, maccountnamewidget
 
 logging.basicConfig(level=logging.INFO)
@@ -65,7 +63,8 @@ class ChatWindow(QWidget, mchatwidget.Ui_Form):
 
         self.db_account = None
         self.selected_contact_addr = None
-        self.buttonSend.clicked.connect(self.on_send_message_click)
+        self.buttonSend.clicked.connect(lambda:
+                                        self.on_send_message_click(self.textChatMessage.toPlainText().__str__()))
 
         # Init Add Acc dialog
         self.progressBar.hide()
@@ -98,7 +97,11 @@ class ChatWindow(QWidget, mchatwidget.Ui_Form):
         self.addAccountDialog.hide()
         self.progressBar.show()
         # Init the account and attach to Tangle
-        self.application.init_account(acc_name, self.fn_on_account_created)
+        self.application.init_account(acc_name,
+                                      # if success:
+                                      self.fn_on_account_created,
+                                      # if error:
+                                      lambda err_value: self.fn_on_account_creation_failed(acc_name, err_value))
 
     def fn_on_account_created(self, new_account):
         self.progressBar.hide()
@@ -106,22 +109,30 @@ class ChatWindow(QWidget, mchatwidget.Ui_Form):
         self.db_manager.store_account(new_account)
         self.load_account()
 
+    def fn_on_account_creation_failed(self, acc_name, err_value):
+        dialog_action = self.on_show_error_message(
+            "Failed to attach account to Tangle:\n{}.\nRetry now..".format(err_value), capture_action=True)
+        if dialog_action == QMessageBox.Yes:
+            self.application.init_account(acc_name,
+                                          self.fn_on_account_created,
+                                          fn_on_failed_callback=self.fn_on_account_creation_failed)
+        else:
+            # Well Don't know what to do here
+            self.close()
+
     def load_account(self):
         """ Retrieve the contacts of this account
         """
         logger.info("Load account: {}".format(self.db_account.address))
         self.labelAccName.setText("{}@{}".format(self.db_account.name, self.db_account.address))
-        pxm = get_pixmap_identicon(self.db_account.address.__str__())
-
-        # FIXME THIS LINE TRIGGER signal 11: SIGSEGV
-        # self.labelAccImage.setPixmap(pxm)
+        self.application.get_qpixmap_identicon(self.db_account.address.__str__(), lambda pix: self.labelAccImage.setPixmap(pix))
 
         contacts = self.db_account.get_list_contacts()
         for contact in contacts:
             self.add_contact_to_list(contact.name, contact.contact_addr)
 
-        # Query for messages history
-        # self.application.query_messages_from_tangle()
+        # Query for messages history FIXME
+        self.application.query_messages_from_tangle(delayed=False)
 
     def on_select_contact(self, current_selected, previous_selected):
         # Begin chatting
@@ -130,8 +141,9 @@ class ChatWindow(QWidget, mchatwidget.Ui_Form):
         messages = self.application.get_messages_for_contact(self.selected_contact_addr)
         self.got_messages_callback(messages)
 
-    def on_send_message_click(self):
-        if self.textChatMessage.toPlainText().__str__() == "":
+    def on_send_message_click(self, plain_message):
+        if plain_message == "":
+            logger.error("Message chat is empty!")
             return
 
         if self.selected_contact_addr is None:
@@ -145,18 +157,42 @@ class ChatWindow(QWidget, mchatwidget.Ui_Form):
             to_addr_str=self.selected_contact_addr,
             text=self.textChatMessage.toPlainText().__str__(),
             fn_on_finished=self.on_worker_thread_finished,
-            fn_on_error=self.on_show_error_message
+            fn_on_error=lambda err_val:
+            self.resend_message_on_error(plain_message,
+                                         self.on_show_error_message(
+                                             "Failed to send message to Tangle: \n{}\n\nRetry ?".format(
+                                                 err_val),
+                                             capture_action=True)
+                                         )
         )
 
-    def on_show_error_message(self, message):
-        error_dialog = QMessageBox(self)
-        error_dialog.setText(message)
-        error_dialog.setWindowTitle("Error")
-        error_dialog.show()
+    def resend_message_on_error(self, plain_message, error_dialog_action):
+        if error_dialog_action is not None and error_dialog_action == QMessageBox.Yes:
+            self.on_send_message_click(plain_message)
+        else:
+            # Do nothing
+            self.textChatMessage.clear()
+
+    def on_show_error_message(self, message, capture_action=False):
+        if not capture_action:
+            error_dialog = QMessageBox(self)
+            error_dialog.setWindowTitle("Error")
+            error_dialog.setText("{}".format(message))
+            error_dialog.show()
+        else:
+            error_dialog = QMessageBox(self)
+            error_dialog.setIcon(QMessageBox.Question)
+            error_dialog.setText("{}".format(message))
+            error_dialog.setWindowTitle("Warning")
+            error_dialog.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
+            # This will blocks until the dialog was closed and return the result
+            return error_dialog.exec_()
 
     def on_worker_thread_finished(self):
         self.progressBar.hide()
         self.textChatMessage.clear()
+        messages = self.application.get_messages_for_contact(self.selected_contact_addr)
+        self.got_messages_callback(messages)
 
     def got_messages_callback(self, messages=None):
         self.progressBar.hide()
@@ -173,11 +209,8 @@ class ChatWindow(QWidget, mchatwidget.Ui_Form):
                                                      datetime.datetime.fromtimestamp(
                                                          int(message.timestamp)
                                                      ).strftime('%Y-%m-%d %H:%M:%S')))
-
-                # FIXME THIS LINE TRIGGER signal 11: SIGSEGV
-                # pxm = get_pixmap_identicon(message.from_address)
-                # msg_label.setIcon(QIcon(pxm))
-
+                self.application.get_qpixmap_identicon(message.from_address,
+                                                       lambda pixmap: msg_label.setIcon(QIcon(pixmap)))
                 self.listMessages.addItem(msg_label)
 
                 msg_text = QListWidgetItem()
@@ -193,23 +226,16 @@ class ChatWindow(QWidget, mchatwidget.Ui_Form):
         # Get new contact info from Tangle and add to current account when success
         self.progressBar.show()
         self.application.init_new_contact(contact_name=name, contact_addr=acc_addr,
-                                          fn_on_contact_added=self.add_contact_to_list)
+                                          fn_on_contact_added=self.add_contact_to_list,
+                                          fn_on_finished=lambda: self.progressBar.hide(),
+                                          fn_on_failed=self.on_show_error_message)
 
     def add_contact_to_list(self, name, acc_address):
         acc_item = QListWidgetItem()
         acc_item.setText("{}@{}...".format(name, acc_address[0:15]))
         acc_item.setWhatsThis(acc_address)
 
-        # FIXME THIS LINE TRIGGER signal 11: SIGSEGV
-        # acc_item.setIcon(QIcon(get_pixmap_identicon(acc_address[:5])))
+        self.application.get_qpixmap_identicon(acc_address, lambda pixmap: acc_item.setIcon(QIcon(pixmap)))
 
         self.listContacts.addItem(acc_item)
         self.progressBar.hide()
-
-
-def get_pixmap_identicon(string_iden):
-    logger.info("String iden: {}".format(string_iden))
-    identicon_image = identiconer.Identicon(string_iden)
-    # Convert from PIL Image -> QImage -> QPixmap
-    pixmap = QPixmap(identicon_image.convert_pil_to_qimage())
-    return pixmap

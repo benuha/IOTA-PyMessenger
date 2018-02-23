@@ -2,7 +2,10 @@ import base64
 import logging
 import sys
 from time import sleep
+
+from PIL.ImageQt import ImageQt
 from PyQt5.QtCore import QThreadPool
+from PyQt5.QtGui import QImage, QPixmap
 from PyQt5.QtWidgets import QApplication
 from iota import get_current_timestamp
 import iota
@@ -13,168 +16,11 @@ from messengerapp.ui.chat_window_ui import ChatWindow
 from messengerapp.ui.login_window_ui import LoginWindow
 from messengerapp.ui.main_window_ui import MainWindow
 from messengerapp.iotacore.iotawrapper import IOTAWrapper
-from messengerapp.utils import mcrypto
+from messengerapp.utils import mcrypto, identiconer
 from messengerapp.utils.qworkersthread import Worker
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
-
-# Define the thread pool for long-running processes
-threadpool = QThreadPool()
-
-
-# def get_account_with_seed(seed=_seed):
-#     try:
-#         logger.info("Get Acc for seed: {}".format(seed))
-#         db_account = db_manager.search_account(seed)
-#
-#         if db_account is not None:
-#             # Check tangle for this account address by tag
-#             get_current_account_transactions(db_account)
-#             pass
-#         return db_account
-#     except:
-#         logger.exception("Cannot search db for account with seed: {}".format(seed))
-#     return None
-#
-#
-# def get_current_account_transactions(cur_account):
-#     worker = Worker(_get_current_account_txs, cur_account)
-#     threadpool.start(worker)
-#
-#
-# def _get_current_account_txs(cur_account):
-#     try:
-#         iota_wrapper = IOTAWrapper(cur_account.seed)
-#         # Find all transactions with tag is current address
-#         transactions_list = iota_wrapper.find_transaction(cur_account.address.__str__())
-#         # if the account has no transaction, it's not been attached to tangle yet
-#         if transactions_list is None or len(transactions_list) == 0:
-#             logger.info("No transaction attached from this account: {}".format(cur_account.address))
-#             # re-attach to tangle
-#             message = {
-#                 "name": cur_account.name,
-#                 "account_address": cur_account.address.__str__(),
-#                 "public_key": cur_account.public_key.decode()
-#             }
-#             logger.info("Send Message to address: {}\n{}".format(cur_account.address, message))
-#             transfer = iota_wrapper.create_new_transaction(
-#                 address=cur_account.address.__str__(),
-#                 message=json.dumps(message),
-#                 raw_tag=iota_wrapper.get_tags(cur_account.address.__str__())
-#             )
-#             iota_wrapper.send_transaction(transfer)
-#         else:
-#             logger.info("Already attached to Tangle: {}".format(cur_account.address))
-#
-#     except:
-#         logger.exception("Failed to get current account transactions: {}".format(cur_account.address))
-#
-#
-# def create_new_account(seed, name):
-#     """ Connect to tangle and request a new address for the current seed """
-#     try:
-#         iota_wrapper = IOTAWrapper(seed)
-#         response = iota_wrapper.create_new_address()
-#         m_address = Address(response,
-#                             balance=response.balance,
-#                             key_index=response.key_index,
-#                             security_level=response.security_level)
-#
-#         private_key_b64, public_key_b64 = iota_wrapper.generate_rsa_key_pair()
-#         db_address = mdatabase.Address(name=name,
-#                                        seed=seed,
-#                                        address=m_address.address,
-#                                        key_index=m_address.key_index,
-#                                        public_key=public_key_b64,
-#                                        private_key=private_key_b64,
-#                                        checksum=m_address.checksum,
-#                                        balance=m_address.balance)
-#         db_manager.add_account(seed, db_address)
-#
-#         # Public the public key of this account to tangle using account address as tag
-#         m_tag = iota_wrapper.get_tags(db_address.address.__str__())
-#         attach_to_tangle(seed,
-#                          name,
-#                          db_address.address.__str__(),
-#                          public_key_b64.decode(),  # decode to string
-#                          m_tag
-#                          )
-#
-#         return db_address
-#     except:
-#         logger.exception("Failed to create new account using seed: {}".format(seed))
-#     pass
-#
-#
-# def attach_to_tangle(seed, acc_name, address_str, public_key, tag):
-#     # Broadcast public address of the account, so other can use this public key to chat with user
-#     message = {
-#         "name": acc_name,
-#         "account_address": address_str,
-#         "public_key": public_key
-#     }
-#     send_message_to_tangle(seed, address_str, message, tag)
-#
-#
-# def get_contact_from_tangle(cur_address, acc_address, on_result=print, on_finished=None):
-#     # Filter by Tag for message that an account has publish
-#     # the tag is the acc_address
-#     worker = Worker(_find_contact_by_tag, cur_address, acc_address)
-#     worker.signals.result.connect(on_result)
-#     if on_finished is not None:
-#         worker.signals.finished.connect(on_finished)
-#     # Execute the worker thread
-#     threadpool.start(worker)
-#
-#
-# def send_message_to_tangle(seed, to_address_str, message, tag=None, on_finished=None):
-#     logger.info("Multiprocessing with maximum {} threads".format(threadpool.maxThreadCount()))
-#     # Pass arguments to worker thread and connect comeback events
-#     worker = Worker(_send_message_from_thread, seed, to_address_str, message, tag)
-#     worker.signals.finished.connect(on_finished)
-#     # Execute the worker thread
-#     threadpool.start(worker)
-#
-#
-# def _on_found_contacts(cur_address, contact_address, contacts_list):
-#     for contact in contacts_list:
-#         db_contact = Contacts(contact_address, contact.get("name"),
-#                               contact["public_key"])
-#         cur_address.add_contact(db_contact)
-#
-#
-# def _find_contact_by_tag(current_address, acc_address):
-#     if acc_address is None:
-#         return
-#     try:
-#         iota_wrapper = IOTAWrapper(current_address.seed)
-#         logger.info("Find account by tag as address: {}".format(acc_address))
-#         transactions_dict = iota_wrapper.find_transaction(acc_address)
-#
-#         _on_found_contacts(current_address, acc_address, transactions_dict)
-#         return transactions_dict
-#     except:
-#         logger.exception("Failed to find_transaction with tag: {}".format(acc_address))
-#
-#
-# def _send_message_from_thread(seed, to_address_str, message=None, tag=None):
-#     if to_address_str is None or message is None:
-#         return
-#
-#     iota_wrapper = IOTAWrapper(seed)
-#     logger.info("Send Message to address: {}\n{}".format(to_address_str, message))
-#     transfer = iota_wrapper.create_new_transaction(
-#         address=to_address_str,
-#         message=json.dumps(message),
-#         raw_tag=tag
-#     )
-#     iota_wrapper.send_transaction(transfer)
-#
-#
-# def login_account_with_seed(seed, form=None):
-#     if form is not None:
-#         form.start_chat_window(seed)
 
 
 def run():
@@ -200,8 +46,8 @@ def run():
     # TODO For Debug: start chat_window right away with a predefine seed
     form.start_login_window()
     # form.start_chat_window(
-    #     # "JURCUDDJDL9WWVYQDUJAHVSPJCOEIJJURNVYHEZAXTKRSVLZUIILVWJBPOQJLLYOWFRMHBSHUENXQNFMI"
-    #     "9MKUUMIQRWZOVZBBLLUXGC9EDYWNVCWZLKPDUJEHVCDHCFPFLRUJOJC9QEXWCIL9HOUUWMDCAWGFAFSJM"
+    #   "JURCUDDJDL9WWVYQDUJAHVSPJCOEIJJURNVYHEZAXTKRSVLZUIILVWJBPOQJLLYOWFRMHBSHUENXQNFMI"
+    #     # "9MKUUMIQRWZOVZBBLLUXGC9EDYWNVCWZLKPDUJEHVCDHCFPFLRUJOJC9QEXWCIL9HOUUWMDCAWGFAFSJM"
     # )
 
     # Execute the app and wait for interaction
@@ -214,28 +60,36 @@ class MainApplication:
         self.db_manager = mdb
         self.seed = None
 
+        # Define the thread pool for long-running processes
+        self.threadpool = QThreadPool()
+
     def set_seed(self, seed):
         self.seed = seed
 
-    def init_account(self, acc_name, fn_on_account_created_callback):
+    def init_account(self, acc_name, fn_on_account_created_callback, fn_on_failed_callback):
         """ Create a new Account with seed and name, generate public/private key-pair for message encryption.
         And lastly attached it to Tangle to communicate"""
         worker = Worker(self._create_new_account, self.seed, acc_name)
         worker.signals.result.connect(fn_on_account_created_callback)
-        worker.signals.error.connect(lambda: fn_on_account_created_callback(None))
+        worker.signals.error.connect(lambda errs: fn_on_failed_callback(errs[1]))
 
-        threadpool.start(worker)
+        self.threadpool.start(worker)
 
-    def init_new_contact(self, contact_name, contact_addr, fn_on_contact_added):
+    def init_new_contact(self, contact_name, contact_addr,
+                         fn_on_contact_added, fn_on_finished, fn_on_failed):
         worker = Worker(self._init_new_contact, self.seed, contact_name, contact_addr)
-        worker.signals.finished.connect(lambda: fn_on_contact_added(contact_name, contact_addr))
-        worker.signals.result.connect(self.fn_add_new_contact)
-        # Do we need error checking here?
-        # worker.signals.error.connect(print)
+        worker.signals.result.connect(lambda this_contact: self.fn_store_contact_to_db(this_contact, fn_on_contact_added))
+        worker.signals.error.connect(lambda errs: fn_on_failed(errs[1]))
+        worker.signals.finished.connect(fn_on_finished)
+        self.threadpool.start(worker)
 
-        threadpool.start(worker)
+    def fn_store_contact_to_db(self, this_contact, fn_contact_added):
+        db_account = self.db_manager.search_account(self.seed)
+        db_account.add_contact(this_contact)
+        fn_contact_added(this_contact.name, this_contact.contact_addr)
 
-    def _init_new_contact(self, seed, contact_name, contact_addr):
+    @staticmethod
+    def _init_new_contact(seed, contact_name, contact_addr):
         # Get this contact info from Tangle by filter for its Tag as addr
         try:
             iota_wrapper = IOTAWrapper(seed)
@@ -248,15 +102,13 @@ class MainApplication:
                                     contact["public_key"])
 
             return this_contact
-        except:
+        except Exception as e:
             logger.exception("Failed to find_transaction with tag: {}".format(contact_addr))
-
-    def fn_add_new_contact(self, this_contact):
-        db_account = self.db_manager.search_account(self.seed)
-        db_account.add_contact(this_contact)
+            # Raise again for front-end to capture it
+            raise e
 
     def _create_new_account(self, seed, name):
-        logger.info("Start multiprocessing with maximum {} threads".format(threadpool.maxThreadCount()))
+        logger.info("Start multiprocessing with maximum {} threads".format(self.threadpool.maxThreadCount()))
         logger.info("Create new account: {}\nSeed: {}".format(name, seed))
         try:
             iota_wrapper = IOTAWrapper(seed)
@@ -298,8 +150,9 @@ class MainApplication:
                 db_address.set_account_status_attached()
 
             return db_address
-        except:
+        except Exception as e:
             logger.exception("Failed to create new account using seed: {}".format(seed))
+            raise e
 
     def send_message_to_selected_contact(self,
                                          from_addr_str,
@@ -326,11 +179,16 @@ class MainApplication:
         worker = Worker(self._send_message_from_thread, self.seed, to_addr_str,
                         create_message.convert_to_dict(), IOTAWrapper.MESS_TAG)
         worker.signals.finished.connect(fn_on_finished)
-        worker.signals.result.connect(lambda: self.on_store_message(create_message, text))
+        worker.signals.result.connect(lambda result: self.on_store_message(result, create_message, text))
+        worker.signals.error.connect(lambda errs_tuple: fn_on_error(errs_tuple[1]))
         # Execute the worker thread
-        threadpool.start(worker)
+        self.threadpool.start(worker)
 
-    def on_store_message(self, created_message, plain_text):
+    def on_store_message(self, bundle, created_message, plain_text):
+        if bundle is None:
+            logger.error("Bundle is None, can't store message to db: {}".format(plain_text))
+            return
+
         logger.info("Store message to db: {}".format(plain_text))
         created_message.text = plain_text
         db_account = self.db_manager.search_account(self.seed)
@@ -343,11 +201,12 @@ class MainApplication:
 
     def query_messages_from_tangle(self, delayed=False):
         """ Pull new messages off Tangle Net with the app Tag """
+        logger.info("Current db messages list: {}".format(len(self.db_manager.search_account(self.seed).get_messages())))
         worker = Worker(self._find_messages, self.seed, delayed)
         worker.signals.result.connect(self.on_store_all_messages)
         # re-run after finished with a time delay
         worker.signals.finished.connect(lambda: self.rerun_the_query(True))
-        threadpool.start(worker)
+        self.threadpool.start(worker)
 
     def rerun_the_query(self, delayed=False):
         # Re-run the query
@@ -381,6 +240,26 @@ class MainApplication:
                     return contact.name
         return "unknown"
 
+    def get_qpixmap_identicon(self, string_iden, fn_set_image):
+        worker = Worker(self._get_qpixmap_identicon, string_iden)
+        worker.signals.result.connect(lambda pixmap: fn_set_image(pixmap))
+
+        self.threadpool.start(worker)
+
+    @staticmethod
+    def _get_qpixmap_identicon(string_iden):
+        """ Generate the Identicon of the string,
+        and convert from PIL Image -> QImage -> QPixmap
+        :return QPixmap image"""
+        logger.info("String iden: {}".format(string_iden))
+        identicon_image = identiconer.create_identicon_pil(ident_str=string_iden)
+
+        imageq = ImageQt(identicon_image)
+        # cast PIL.ImageQt object to QImage object -that´s the trick!!!
+        qimage = QImage(imageq)
+        pixmap = QPixmap(qimage)
+        return pixmap
+
     @staticmethod
     def _send_message_from_thread(seed, to_address_str, message=None, tag=None):
         if to_address_str is None or message is None:
@@ -400,7 +279,7 @@ class MainApplication:
         try:
             if must_wait:
                 # Wait a bit before rerun it
-                sleep(3)
+                sleep(10)
             logger.info("Find messages from Tangle")
             iota_wrapper = IOTAWrapper(seed)
             txs = iota_wrapper.find_transaction()

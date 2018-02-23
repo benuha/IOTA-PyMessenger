@@ -1,41 +1,40 @@
 from unittest import TestCase
-
-import transaction as zodb_trans
-
-from messengerapp.db.mdatabase import Account, Contacts, Messages, Address, DBManager
+from messengerapp.db.mdatabase import Account, Contacts, Messages, DBManager
 
 
 class MDatabaseTest(TestCase):
+    """This test is for db specific and only focus on checking ZODB """
 
     def setUp(self):
         self.db_man = DBManager()
-        self.db_root = self.db_man.db_root
-        self.predefined_seed = "9MKUUMIQRWZOVZBBLLUXGC9EDYWNVCWZLKPDUJEHVCDHCFPFLRUJOJC9QEXWCIL9HOUUWMDCAWGFAFSJM"
-        self.predefined_address = "ZJLUDW9MCJSQKMCESEHJHZKOPZVHNNWKO9IKHUPJMFHXRVVAUNEIQNYOKGYM9DYGMZZNHAIHZYAOTAKAB"
+        self.predefined_1 = {
+            "seed": "9MKUUMIQRWZOVZBBLLUXGC9EDYWNVCWZLKPDUJEHVCDHCFPFLRUJOJC9QEXWCIL9HOUUWMDCAWGFAFSJM",
+            "address": "SFKKFEJMOPDTVOQXFFVRACCVAYPWZNXDXQUK9KSRXSKCDSBIVZHVPLUPOI9SKOTF9SJ9GAUEDVEEUVGXD"
+        }
+        self.predefined_2 = {
+            "seed": "JURCUDDJDL9WWVYQDUJAHVSPJCOEIJJURNVYHEZAXTKRSVLZUIILVWJBPOQJLLYOWFRMHBSHUENXQNFMI"
+        }
 
-    def _test_add_account(self):
-        account = Account(hashed_seed=self.predefined_seed)
-        self.assertFalse(self.predefined_seed in self.db_root)
-        self.db_root[self.predefined_seed] = account
-        zodb_trans.commit()
-        self.assertTrue(self.predefined_seed in self.db_root)
-        self.assertTrue(type(self.db_root[self.predefined_seed] is Account))
+    def _test_check_account(self):
+        db_account = self.db_man.search_account(self.predefined_1["seed"])
 
-    def _test_add_address(self):
-        self.assertIsNotNone(self.db_root[self.predefined_seed])
-        self.assertTrue(len(self.db_root[self.predefined_seed].get_addresses_list()) == 0)
+        print(db_account.address)
+        self.assertTrue(self.predefined_1["address"], db_account.address)
 
-        address = Address(
-            name="benuha",
-            address=self.predefined_address,
-            key_index=7,
-            checksum="DRNERWHDA",
-        )
-        self.db_root[self.predefined_seed].store_new_address(address)
-        self.assertTrue(len(self.db_root[self.predefined_seed].get_addresses_list()) == 1)
+    def test_check_messages_list(self):
+        db_account = self.db_man.search_account(self.predefined_2["seed"])
+        print(db_account.address)
+        self.assertTrue(db_account.get_messages is not None)
 
-    def test_add_contact(self):
-        pass
+        # clean messages list
+        # db_account.get_messages().clear()
+        # db_account.update_all()
+        print(len(db_account.get_messages()))
+        for message in db_account.get_messages():
+            print(message.convert_to_dict())
+            # if "NZIVFIVOZSORKGMIEADEQXXGKVLNZALZCNVZPVZZPDSYGSF9PTLVWVSCCRGXOHSESMZYXTLXDXVQBYEJX" == message.from_address:
+            #     db_account.get_messages().remove(message)
+        # db_account.update_all()
 
     def tearDown(self):
         self.db_man.close()

@@ -73,23 +73,17 @@ class IOTAWrapper:
         return self.address
 
     def send_transaction(self, transfer, depth=4, min_weight_magnitude=None):
-        try:
-            if transfer is None:
-                logger.error("No transfer specified!")
-                return
-            response = self.api.send_transfer(
-                depth=depth,
-                transfers=transfer,
-                min_weight_magnitude=min_weight_magnitude,  # if None, the api will use default number for main-net
-            )
-        except ConnectionError as e:
-            logger.exception("Connection error: {e}".format(e=e))
-            return None
-        except BadApiResponse as e:
-            logger.exception("Bad Api Response: {e}".format(e=e))
-            return None
-        else:
-            return response
+        """ Send transaction to Tangle.
+            front-end need to try-catch this method """
+        if transfer is None:
+            logger.error("No transfer specified!")
+            return
+        response = self.api.send_transfer(
+            depth=depth,
+            transfers=transfer,
+            min_weight_magnitude=min_weight_magnitude,  # if None, the api will use default number for main-net
+        )
+        return response
 
     def get_messages_from_address(self, address):
         try:

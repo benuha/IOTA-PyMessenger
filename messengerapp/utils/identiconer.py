@@ -14,11 +14,17 @@ This's a fork from project:
 
 import hashlib
 
+import sys
+from PyQt5 import QtCore, QtWidgets
+
 from PIL import Image, ImageDraw, ImageOps
 from PIL.ImageQt import ImageQt
-from PyQt5.QtGui import QImage
+from PyQt5.QtCore import QSize
+from PyQt5.QtGui import QImage, QPixmap, QColor
 
 import logging
+
+from PyQt5.QtWidgets import QApplication, QLabel, QStyle
 
 logger = logging.getLogger(__name__)
 
@@ -40,54 +46,62 @@ def get_md5_from(text):
     return hash.hexdigest()
 
 
-class Identicon(object):
+def create_identicon_pil(ident_str, size=420, pixel=70, border=35, background='#EFEFEF'):
+    hash_id = get_md5_from(ident_str)
+    color = tuple([int(x, 16) for x in (hash_id[0:2], hash_id[2:4], hash_id[4:6])])
+    pixels = get_pixels(int(hash_id[6:], 16))
+    image = Image.new("RGB", (size, size), background)
+    draw = ImageDraw.Draw(image)
 
-    def __init__(self, ident_str):
-        self.hash_id = get_md5_from(ident_str)
-        logger.info("Init identicon for str: {}".format(self.hash_id))
-        # using the first six hexadecimal num to decide the color
-        self.color = tuple([int(x, 16) for x in (self.hash_id[0:2], self.hash_id[2:4], self.hash_id[4:6])])
-        self.pixels = get_pixels(int(self.hash_id[6:], 16))
-        self.image = None
-        self._draw(size=480)
+    for i in range(5):
+        for j in range(5):
+            if pixels[i][j] == '1':
+                x = j * pixel + border
+                y = i * pixel + border
+                draw.rectangle(
+                    ((x, y), (x + pixel, y + pixel)),
+                    fill=color,
+                    outline=color)
 
-    def _draw(self, pixel=70, border=35, size=420, background='#EFEFEF'):
-        self.image = Image.new("RGB", (size, size), background)
-        draw = ImageDraw.Draw(self.image)
+    mask = Image.new('L', (size, size), 0)
+    draw = ImageDraw.Draw(mask)
+    draw.ellipse(((0, 0), (0 + size, 0 + size)), fill=255)
+    output = ImageOps.fit(image, mask.size, centering=(0, 0))
+    output.putalpha(mask)
 
-        for i in range(5):
-            for j in range(5):
-                if self.pixels[i][j] == '1':
-                    x = j * pixel + border
-                    y = i * pixel + border
-                    draw.rectangle(
-                        ((x, y), (x + pixel, y + pixel)),
-                        fill=self.color,
-                        outline=self.color)
-
-    def show(self):
-        self.image.show()
-
-    def save(self, extension='.jpg'):
-        fname = str(self.hash_id) + extension
-        self.image.save(fname, "JPEG")
-
-    def convert_pil_to_qimage(self):
-        """converts a PIL image to QImage"""
-        # convert PIL image to a PIL.ImageQt object
-        imageq = ImageQt(self.image)
-        # cast PIL.ImageQt object to QImage object -that´s the trick!!!
-        qimage = QImage(imageq)
-        return qimage
+    return output
 
 
 if __name__ == '__main__':
-   # iden = Identicon("9MKUUEKQRWZOVZBBLLUXGC9EDYWNVCWZLKPDUJEHVCDHCFPFLPZAOJC9QEXWCIL9HOUUWMDCAWGFAFSJM")
-   iden = Identicon("Y9UYQNOKBIOKXTIYPUJKENVQF9KGLLYHVBJJUTFSNFVZOTR9LWDEIVLGYHLDFROBGIKGIIHVRWZRKYZ9Z")
+    # iden = Identicon("9MKUUEKQRWZOVZBBLLUXGC9EDYWNVCWZLKPDUJEHVCDHCFPFLPZAOJC9QEXWCIL9HOUUWMDCAWGFAFSJM")
+    iden = create_identicon_pil("Y9UYQNOKBIOKXTIYPUJKENVQF9KGLLYHVBJJUTFSNFVZOTR9LWDEIVLGYHLDFROBGIKGIIHVRWZRKYZ9Z")
 
-   mask = Image.new('L', (420, 420), 0)
-   draw = ImageDraw.Draw(mask)
-   draw.ellipse(((0, 0), (0 + 420, 0 + 420)), fill=255)
-   output = ImageOps.fit(iden.image, mask.size, centering=(0, 0))
-   output.putalpha(mask)
-   output.show()
+    # mask = Image.new('L', (420, 420), 0)
+    # draw = ImageDraw.Draw(mask)
+    # draw.ellipse(((0, 0), (0 + 420, 0 + 420)), fill=255)
+    # output = ImageOps.fit(iden, mask.size, centering=(0, 0))
+    # output.putalpha(mask)
+    # output.show()
+
+    # Create a no-brain QtApp with a label and add image to the label
+    app = QApplication(sys.argv)
+    label = QLabel()
+    # label.palette().setColor(label.backgroundRole(), QColor(255, 255, 255))
+    label.setMaximumSize(QSize(41, 41))
+    # Convert from PIL Image -> QImage -> QPixmap
+    # convert PIL image to a PIL.ImageQt object
+    imageq = ImageQt(iden)
+    # cast PIL.ImageQt object to QImage object -that´s the trick!!!
+    qimage = QImage(imageq)
+    qpixm = QPixmap(qimage)
+
+    # label.setGeometry(QtCore.QRect(20, 10, 41, 41))
+    # label.setAutoFillBackground(True)
+    label.setFrameShape(QtWidgets.QFrame.Box)
+    label.setText("")
+    label.setScaledContents(True)
+
+    label.setPixmap(qpixm)
+    label.show()
+
+    sys.exit(app.exec_())
