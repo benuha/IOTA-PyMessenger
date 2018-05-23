@@ -23,37 +23,6 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
-def run():
-    # Create a new instance of QApplication
-    app = QApplication(sys.argv)
-    # Set the form to be our design MainWindow
-    form = MainWindow()
-
-    mLoginWindow = LoginWindow(form,
-                               fn_login_account_with_seed=form.start_chat_window)
-
-    # Define database management object
-    db_man = DBManager()
-
-    mChatWindow = ChatWindow(form,
-                             application=MainApplication(db_man),
-                             db_manager=db_man)
-
-    form.mChatWindow = mChatWindow
-    form.mLoginWindow = mLoginWindow
-    form.show()
-
-    # TODO For Debug: start chat_window right away with a predefine seed
-    form.start_login_window()
-    # form.start_chat_window(
-    #   "JURCUDDJDL9WWVYQDUJAHVSPJCOEIJJURNVYHEZAXTKRSVLZUIILVWJBPOQJLLYOWFRMHBSHUENXQNFMI"
-    #     # "9MKUUMIQRWZOVZBBLLUXGC9EDYWNVCWZLKPDUJEHVCDHCFPFLRUJOJC9QEXWCIL9HOUUWMDCAWGFAFSJM"
-    # )
-
-    # Execute the app and wait for interaction
-    sys.exit(app.exec_())
-
-
 class MainApplication:
 
     def __init__(self, mdb):
@@ -62,6 +31,7 @@ class MainApplication:
 
         # Define the thread pool for long-running processes
         self.threadpool = QThreadPool()
+        self.piximaps = {}
 
     def set_seed(self, seed):
         self.seed = seed
@@ -154,45 +124,47 @@ class MainApplication:
             logger.exception("Failed to create new account using seed: {}".format(seed))
             raise e
 
-    def send_message_to_selected_contact(self,
-                                         from_addr_str,
-                                         to_addr_str,
-                                         text,
-                                         fn_on_finished=None,
-                                         fn_on_error=None):
-
-        create_message = Messages(from_address=from_addr_str,
-                                  to_address=to_addr_str,
-                                  timestamp=get_current_timestamp(),
-                                  text="")
-
+    def create_new_message(self,
+                           from_addr_str,
+                           to_addr_str,
+                           text):
+        """ Creat a message based on input, encrypt plain-text with recipient public key """
+        created_message = Messages(from_address=from_addr_str,
+                                   to_address=to_addr_str,
+                                   timestamp=get_current_timestamp(),
+                                   text="")
         # Get the contact associate with this acc
         acc_contact = self.db_manager.search_for_contact(self.seed, to_addr_str)
         if acc_contact is not None and acc_contact.public_key is not None:
             cipher_text, aes_cipher = mcrypto.message_encryption(json.dumps(text),
-                                                                 base64.b64decode(acc_contact.public_key.encode('utf-8')))
-            create_message.cipher_text = cipher_text.decode('utf-8')
-            create_message.aes_cipher = aes_cipher.decode('utf-8')
+                                                                 base64.b64decode(
+                                                                     acc_contact.public_key.encode('utf-8')))
+            created_message.cipher_text = cipher_text.decode('utf-8')
+            created_message.aes_cipher = aes_cipher.decode('utf-8')
 
-        logger.info("Sending message: {}".format(create_message))
-        # Pass arguments to worker thread and connect comeback events
-        worker = Worker(self._send_message_from_thread, self.seed, to_addr_str,
-                        create_message.convert_to_dict(), IOTAWrapper.MESS_TAG)
-        worker.signals.finished.connect(fn_on_finished)
-        worker.signals.result.connect(lambda result: self.on_store_message(result, create_message, text))
-        worker.signals.error.connect(lambda errs_tuple: fn_on_error(errs_tuple[1]))
-        # Execute the worker thread
-        self.threadpool.start(worker)
-
-    def on_store_message(self, bundle, created_message, plain_text):
-        if bundle is None:
-            logger.error("Bundle is None, can't store message to db: {}".format(plain_text))
-            return
-
-        logger.info("Store message to db: {}".format(plain_text))
-        created_message.text = plain_text
+        logger.info("Created new message: {}".format(created_message))
+        # Store message in db
+        logger.info("Store message to db: {}".format(text))
+        created_message.text = text
         db_account = self.db_manager.search_account(self.seed)
         db_account.add_message(created_message)
+        return created_message
+
+    def send_message_to_tangle(self,
+                               message,
+                               fn_on_result,
+                               fn_on_finished=None,
+                               fn_on_error=None):
+        """ Sending message to Tangle """
+        logger.info("Sending message: {}".format(message))
+        # Pass arguments to worker thread and connect comeback events
+        worker = Worker(self._send_message_from_thread, self.seed, message.to_address,
+                        message.convert_to_dict(), IOTAWrapper.MESS_TAG)
+        worker.signals.finished.connect(fn_on_finished)
+        worker.signals.result.connect(lambda result: fn_on_result(message))
+        worker.signals.error.connect(lambda errs_tuple: fn_on_error(message, errs_tuple[1]))
+        # Execute the worker thread
+        self.threadpool.start(worker)
 
     def on_store_all_messages(self, messages):
         # save to db
@@ -241,10 +213,14 @@ class MainApplication:
         return "unknown"
 
     def get_qpixmap_identicon(self, string_iden, fn_set_image):
-        worker = Worker(self._get_qpixmap_identicon, string_iden)
-        worker.signals.result.connect(lambda pixmap: fn_set_image(pixmap))
-
-        self.threadpool.start(worker)
+        if len(self.piximaps.keys()) == 0 or self.piximaps.get(string_iden) is None:
+            pixmap = self._get_qpixmap_identicon(string_iden)
+            # Store the image locally so we can get to it later
+            self.piximaps[string_iden] = pixmap
+            fn_set_image(pixmap)
+        else:
+            # Retrive the current Iden image
+            fn_set_image(self.piximaps.get(string_iden))
 
     @staticmethod
     def _get_qpixmap_identicon(string_iden):
@@ -276,6 +252,7 @@ class MainApplication:
 
     @staticmethod
     def _find_messages(seed, must_wait=False):
+        messages = []
         try:
             if must_wait:
                 # Wait a bit before rerun it
@@ -284,7 +261,6 @@ class MainApplication:
             iota_wrapper = IOTAWrapper(seed)
             txs = iota_wrapper.find_transaction()
 
-            messages = []
             for transaction in txs:
                 try:
                     message = Messages(
@@ -306,10 +282,43 @@ class MainApplication:
                     logger.error("Cannot extract message from transaction: {}".format(transaction))
 
             messages.sort(key=lambda x: x.timestamp)
-            logger.info(messages)
-            return messages
+            for m in messages:
+                logger.info(m)
         except:
             logger.exception("Failed to find messages with app tag")
+
+        return messages
+
+
+def run():
+    # Create a new instance of QApplication
+    app = QApplication(sys.argv)
+    # Set the form to be our design MainWindow
+    form = MainWindow()
+
+    mLoginWindow = LoginWindow(form,
+                               fn_login_account_with_seed=form.start_chat_window)
+
+    # Define database management object
+    db_man = DBManager()
+
+    mChatWindow = ChatWindow(form,
+                             application=MainApplication(db_man),
+                             db_manager=db_man)
+
+    form.mChatWindow = mChatWindow
+    form.mLoginWindow = mLoginWindow
+    form.show()
+
+    # TODO For Debug: start chat_window right away with a predefine seed
+    # form.start_login_window()
+    form.start_chat_window(
+      "JURCUDDJDL9WWVYQDUJAHVSPJCOEIJJURNVYHEZAXTKRSVLZUIILVWJBPOQJLLYOWFRMHBSHUENXQNFMI"
+        # "9MKUUMIQRWZOVZBBLLUXGC9EDYWNVCWZLKPDUJEHVCDHCFPFLRUJOJC9QEXWCIL9HOUUWMDCAWGFAFSJM"
+    )
+
+    # Execute the app and wait for interaction
+    sys.exit(app.exec_())
 
 
 if __name__ == '__main__':

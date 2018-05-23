@@ -152,6 +152,7 @@ class Messages(persistent.Persistent):
         self.aes_cipher = aes_cipher
         self.message_root = message_root
         self.status = status
+        self.mess_id = self.get_hashcode()
 
     def is_valid_message(self):
         return self.from_address is not None and \
@@ -170,6 +171,11 @@ class Messages(persistent.Persistent):
 
         return False
 
+    def get_mess_id(self):
+        if not hasattr(self, "mess_id"):
+            return self.get_hashcode()
+        return self.mess_id
+
     def get_hashcode(self):
         md5 = hashlib.md5()
         md5.update(json.dumps(
@@ -177,7 +183,7 @@ class Messages(persistent.Persistent):
                 "from_address": self.from_address,
                 "to_address": self.to_address,
                 "timestamp": self.timestamp,
-                "text": self.text
+                "cipher_text": self.cipher_text
             }).encode('utf-8'))
         return md5.hexdigest()
 
@@ -192,3 +198,6 @@ class Messages(persistent.Persistent):
             "message_root": self.message_root,
             "status": self.status
         }
+
+    def __str__(self):
+        return json.dumps(self.convert_to_dict()).__str__()

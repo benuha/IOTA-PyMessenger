@@ -15,7 +15,8 @@ logger = logging.getLogger(__name__)
 class IOTAWrapper:
     # The node that we will talk to in order to connect to iota tangle
     # We can host the node our-self
-    DEFAULT_PROVIDER = "http://localhost:14265"  # "http://p103.iotaledger.net:14700" #"http://node02.iotatoken.nl:14265"
+    # "http://localhost:14265"  # "http://p103.iotaledger.net:14700" #"http://node02.iotatoken.nl:14265"
+    DEFAULT_PROVIDER = "http://34.194.154.203:14265"    # Amazon AWS
 
     # Our channel predefined tag for all messages sent/received
     MESS_TAG = "MESSAGEKAPIOZTAG9999999999"  # "MESKAPIOZTAG99999999999999"

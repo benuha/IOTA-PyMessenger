@@ -75,33 +75,34 @@ def create_identicon_pil(ident_str, size=420, pixel=70, border=35, background='#
 if __name__ == '__main__':
     # iden = Identicon("9MKUUEKQRWZOVZBBLLUXGC9EDYWNVCWZLKPDUJEHVCDHCFPFLPZAOJC9QEXWCIL9HOUUWMDCAWGFAFSJM")
     iden = create_identicon_pil("Y9UYQNOKBIOKXTIYPUJKENVQF9KGLLYHVBJJUTFSNFVZOTR9LWDEIVLGYHLDFROBGIKGIIHVRWZRKYZ9Z")
+    iden.show()
 
-    # mask = Image.new('L', (420, 420), 0)
-    # draw = ImageDraw.Draw(mask)
-    # draw.ellipse(((0, 0), (0 + 420, 0 + 420)), fill=255)
-    # output = ImageOps.fit(iden, mask.size, centering=(0, 0))
-    # output.putalpha(mask)
-    # output.show()
-
-    # Create a no-brain QtApp with a label and add image to the label
-    app = QApplication(sys.argv)
-    label = QLabel()
-    # label.palette().setColor(label.backgroundRole(), QColor(255, 255, 255))
-    label.setMaximumSize(QSize(41, 41))
-    # Convert from PIL Image -> QImage -> QPixmap
-    # convert PIL image to a PIL.ImageQt object
-    imageq = ImageQt(iden)
-    # cast PIL.ImageQt object to QImage object -that´s the trick!!!
-    qimage = QImage(imageq)
-    qpixm = QPixmap(qimage)
-
-    # label.setGeometry(QtCore.QRect(20, 10, 41, 41))
-    # label.setAutoFillBackground(True)
-    label.setFrameShape(QtWidgets.QFrame.Box)
-    label.setText("")
-    label.setScaledContents(True)
-
-    label.setPixmap(qpixm)
-    label.show()
-
-    sys.exit(app.exec_())
+    # # mask = Image.new('L', (420, 420), 0)
+    # # draw = ImageDraw.Draw(mask)
+    # # draw.ellipse(((0, 0), (0 + 420, 0 + 420)), fill=255)
+    # # output = ImageOps.fit(iden, mask.size, centering=(0, 0))
+    # # output.putalpha(mask)
+    # # output.show()
+    #
+    # # Create a no-brain QtApp with a label and add image to the label
+    # app = QApplication(sys.argv)
+    # label = QLabel()
+    # # label.palette().setColor(label.backgroundRole(), QColor(255, 255, 255))
+    # label.setMaximumSize(QSize(41, 41))
+    # # Convert from PIL Image -> QImage -> QPixmap
+    # # convert PIL image to a PIL.ImageQt object
+    # imageq = ImageQt(iden)
+    # # cast PIL.ImageQt object to QImage object -that´s the trick!!!
+    # qimage = QImage(imageq)
+    # qpixm = QPixmap(qimage)
+    #
+    # # label.setGeometry(QtCore.QRect(20, 10, 41, 41))
+    # # label.setAutoFillBackground(True)
+    # label.setFrameShape(QtWidgets.QFrame.Box)
+    # label.setText("")
+    # label.setScaledContents(True)
+    #
+    # label.setPixmap(qpixm)
+    # label.show()
+    #
+    # sys.exit(app.exec_())

@@ -1,6 +1,6 @@
 import datetime
 import logging
-from PyQt5.QtGui import QIcon
+from PyQt5.QtGui import QIcon, QColor
 from PyQt5.QtWidgets import QWidget, QDialog, QListWidgetItem, QMessageBox, QErrorMessage
 from messengerapp.views import mchatwidget, msearchwidget, maccountnamewidget
 
@@ -63,8 +63,7 @@ class ChatWindow(QWidget, mchatwidget.Ui_Form):
 
         self.db_account = None
         self.selected_contact_addr = None
-        self.buttonSend.clicked.connect(lambda:
-                                        self.on_send_message_click(self.textChatMessage.toPlainText().__str__()))
+        self.buttonSend.clicked.connect(self.on_button_send_click)
 
         # Init Add Acc dialog
         self.progressBar.hide()
@@ -88,7 +87,6 @@ class ChatWindow(QWidget, mchatwidget.Ui_Form):
         self.db_account = self.db_manager.search_account(seed)
 
         if self.db_account is not None:
-            messages = self.db_account.get_messages()
             self.load_account()
         else:
             self.addAccountDialog.show()
@@ -141,7 +139,8 @@ class ChatWindow(QWidget, mchatwidget.Ui_Form):
         messages = self.application.get_messages_for_contact(self.selected_contact_addr)
         self.got_messages_callback(messages)
 
-    def on_send_message_click(self, plain_message):
+    def on_button_send_click(self):
+        plain_message = self.textChatMessage.toPlainText().__str__()
         if plain_message == "":
             logger.error("Message chat is empty!")
             return
@@ -151,48 +150,57 @@ class ChatWindow(QWidget, mchatwidget.Ui_Form):
             self.on_show_error_message("You must select a contact to start messaging")
             return
 
-        self.progressBar.show()
-        self.application.send_message_to_selected_contact(
+        new_message = self.application.create_new_message(
             from_addr_str=self.db_account.address.__str__(),
             to_addr_str=self.selected_contact_addr,
             text=self.textChatMessage.toPlainText().__str__(),
-            fn_on_finished=self.on_worker_thread_finished,
-            fn_on_error=lambda err_val:
-            self.resend_message_on_error(plain_message,
-                                         self.on_show_error_message(
-                                             "Failed to send message to Tangle: \n{}\n\nRetry ?".format(
-                                                 err_val),
-                                             capture_action=True)
-                                         )
+        )
+        self.add_message_to_chat(self.db_account.name, new_message, is_attached=False)
+        self.on_send_message(plain_message)
+
+    def on_send_message(self, new_message):
+        if new_message is None:
+            raise ValueError("Message to send cannot be empty!")
+
+        self.progressBar.show()
+        self.application.send_message_to_tangle(
+            message=new_message,
+            fn_on_result=self.on_sending_message_finished,
+            fn_on_error=lambda unsent_message, err_val:
+                self.resend_message_on_error(unsent_message,
+                                             self.on_show_error_message(
+                                                 "Failed to send message to Tangle: \n{}\n\nRetry ?".format(
+                                                     err_val),
+                                                 capture_action=True)
+                                             )
         )
 
-    def resend_message_on_error(self, plain_message, error_dialog_action):
+    def resend_message_on_error(self, unsent_message, error_dialog_action):
         if error_dialog_action is not None and error_dialog_action == QMessageBox.Yes:
-            self.on_send_message_click(plain_message)
+            self.on_send_message(unsent_message)
         else:
             # Do nothing
             self.textChatMessage.clear()
 
-    def on_show_error_message(self, message, capture_action=False):
+    def on_show_error_message(self, err_text, capture_action=False):
         if not capture_action:
             error_dialog = QMessageBox(self)
             error_dialog.setWindowTitle("Error")
-            error_dialog.setText("{}".format(message))
+            error_dialog.setText("{}".format(err_text))
             error_dialog.show()
         else:
             error_dialog = QMessageBox(self)
             error_dialog.setIcon(QMessageBox.Question)
-            error_dialog.setText("{}".format(message))
+            error_dialog.setText("{}".format(err_text))
             error_dialog.setWindowTitle("Warning")
             error_dialog.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
             # This will blocks until the dialog was closed and return the result
             return error_dialog.exec_()
 
-    def on_worker_thread_finished(self):
+    def on_sending_message_finished(self, message):
         self.progressBar.hide()
         self.textChatMessage.clear()
-        messages = self.application.get_messages_for_contact(self.selected_contact_addr)
-        self.got_messages_callback(messages)
+        self.add_message_to_chat(message.from_address, message, is_attached=True)
 
     def got_messages_callback(self, messages=None):
         self.progressBar.hide()
@@ -204,18 +212,35 @@ class ChatWindow(QWidget, mchatwidget.Ui_Form):
                     message.to_address == self.selected_contact_addr:
                 sender_name = self.application.get_addr_name(message.from_address)
 
-                msg_label = QListWidgetItem()
-                msg_label.setText("{} on {}:".format(sender_name,
-                                                     datetime.datetime.fromtimestamp(
-                                                         int(message.timestamp)
-                                                     ).strftime('%Y-%m-%d %H:%M:%S')))
-                self.application.get_qpixmap_identicon(message.from_address,
-                                                       lambda pixmap: msg_label.setIcon(QIcon(pixmap)))
-                self.listMessages.addItem(msg_label)
+                self.add_message_to_chat(sender_name, message, True)
 
-                msg_text = QListWidgetItem()
-                msg_text.setText(message.text)
-                self.listMessages.addItem(msg_text)
+    def add_message_to_chat(self, sender_name, message, is_attached=False):
+        """ Add message to QList, return the index of message """
+        # Check if message already on the list
+        if self.listMessages.size() > 0:
+            for
+
+        else:
+            msg_label = QListWidgetItem()
+            msg_label.setText("{} on {}:".format(sender_name,
+                                                 datetime.datetime.fromtimestamp(
+                                                     int(message.timestamp)
+                                                 ).strftime('%Y-%m-%d %H:%M:%S')))
+            self.application.get_qpixmap_identicon(message.from_address,
+                                                   lambda pixmap: msg_label.setIcon(QIcon(pixmap)))
+            self.listMessages.addItem(msg_label)
+
+            msg_text = QListWidgetItem()
+            msg_text.setText(message.text)
+
+            if not is_attached:
+                msg_label.setForeground(QColor("gray"))
+                msg_text.setForeground(QColor("gray"))
+            else:
+                msg_label.setForeground(QColor("black"))
+                msg_text.setForeground(QColor("black"))
+
+            self.listMessages.addItem(msg_text)
 
     def on_open_search_contact_dialog(self):
         # self.dialog.exec_()
