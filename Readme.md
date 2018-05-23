@@ -66,7 +66,7 @@ $ cat /dev/urandom | tr -dc A-Z9 | head -c${1:-81}
 ```
 
 2. The app then presents with simple chat windows:
-![alt text](https://raw.githubusercontent.com/benuha/IOTA-PyMessenger/master/images/3_iota_chat_chat_windows_history.png)
+![alt text](https://raw.githubusercontent.com/benuha/IOTA-PyMessenger/master/images/3_iota_chat_chat_windows_history_.png)
 
 # License
 All projects licensed under the GNU General Public License (GPL) version 3, with the exception of Qt Software.
